@@ -1,5 +1,6 @@
 import {css, html, LitElement} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
+import {ifDefined} from "../utils/ifDefined";
 
 export type Button =
     {
@@ -55,9 +56,3 @@ export class NavigationBar extends LitElement {
     }
 }
 
-export function ifDefined<T, RETURN_VALUE>(value: T | undefined, callback: (value: T) => RETURN_VALUE): RETURN_VALUE | undefined {
-    if (value !== undefined) {
-        return callback(value)
-    }
-    return undefined;
-}

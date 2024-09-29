@@ -1,9 +1,8 @@
 import {createContext} from "@lit/context";
-import {CurrentlyPlaying, SpotifyController} from "./SpotifyController";
+import {PlaybackState, SpotifyController} from "./SpotifyController";
 
-
-export const spotifyContext = createContext<CurrentlyPlaying | undefined>(Symbol('spotifyContext'));
+export const spotifyContext = createContext<PlaybackState | null>(Symbol('spotifyContext'));
 export type Controllers = {
-    spotifyController: SpotifyController
+  spotifyController: SpotifyController
 };
 export const controllersContext = createContext<Controllers | undefined>(Symbol('controllersContext'));
