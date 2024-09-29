@@ -1,10 +1,10 @@
 import {css, html, LitElement, TemplateResult} from 'lit'
 import {customElement, state} from 'lit/decorators.js'
 import {provide} from "@lit/context";
-import {Controllers, controllersContext, spotifyContext} from "../SpotifyContext";
+import {Controllers, controllersContext, devicesContext, spotifyContext} from "../SpotifyContext";
 import {SpotifyPage} from "./SpotifyPage";
 import {NavigationBar} from "./NavigationBar";
-import {PlaybackState} from "../SpotifyController";
+import {Device, PlaybackState} from "../SpotifyController";
 
 SpotifyPage;
 NavigationBar;
@@ -34,6 +34,9 @@ export class Root extends LitElement {
 
   @provide({context: spotifyContext})
   spotifyContext: PlaybackState | null = null;
+
+  @provide({context: devicesContext})
+  devices: Device[] = [];
 
   @provide({context: controllersContext})
   controllers: Controllers;

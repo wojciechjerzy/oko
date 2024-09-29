@@ -112,12 +112,12 @@ export class SpotifyController {
   async update(): Promise<any> {
 
     let token = await this.autorizationPromise;
-    let spotifyContext = await this.getPlaybackState({market: "PL"});
-    if (spotifyContext === null) {
-      this.root.spotifyContext = null
-
-    } else if (Object.hasOwn(spotifyContext, "error")) {
-
+    try {
+      this.root.devices = [];
+      this.root.spotifyContext = await this.getPlaybackState({market: "PL"})
+      this.root.devices = (await this.getDevices())?.devices ?? []
+    } catch (e) {
+      console.error(e);
       if (token.refresh_token) {
         const payload = {
           method: 'POST',
@@ -137,8 +137,6 @@ export class SpotifyController {
       } else {
         return this.authorize();
       }
-    } else {
-      this.root.spotifyContext = spotifyContext as PlaybackState
     }
   }
 
@@ -147,7 +145,11 @@ export class SpotifyController {
   }
 
   getPlaybackState(body: { market: string }) {
-    return this.get<PlaybackState>("/me/player", body);
+    return this.get<PlaybackState | null>("/me/player", body);
+  }
+
+  getDevices() {
+    return this.get<{ devices: Device[] }>("/me/player/devices", {});
   }
 
   async request(path: string, method: "GET" | "POST", body: any, waitForRespinse: boolean) {
@@ -173,7 +175,7 @@ export class SpotifyController {
     return undefined;
   }
 
-  async get<RETURN_TYPE>(path: string, body: Record<string, any>): Promise<RETURN_TYPE | { error: string } | null> {
+  async get<RETURN_TYPE>(path: string, body: Record<string, any>): Promise<RETURN_TYPE | null> {
     let token = await this.autorizationPromise;
     let url = "https://api.spotify.com/v1" + path + "?" + Object.keys(body).map(key => key + "=" + body[key]).join(",");
     let response = await fetch(url, {
@@ -185,12 +187,16 @@ export class SpotifyController {
 
     let text = await response.text();
     if (text) {
-      return JSON.parse(text);
+      let json = JSON.parse(text);
+      if (json.error) {
+        throw json.error
+      }
+      return json;
     }
     return null;
   }
 
-  async put(path: string, body: any, waitForRespinse = true) {
+  async put(path: string, body: Record<string, any>, waitForRespinse = true) {
     let token = await this.autorizationPromise;
     let response = await fetch("https://api.spotify.com/v1" + path + "?" + Object.keys(body).map(key => key + "=" + body[key]).join("&"), {
       method: "PUT",
@@ -265,7 +271,7 @@ export class SpotifyController {
   }
 
   async pause() {
-    await this.request("/me/player/pause", "POST", null, false)
+    await this.put("/me/player/pause", {}, false)
     await this.update();
   }
 
