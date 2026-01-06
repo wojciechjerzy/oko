@@ -1,24 +1,43 @@
-import {redirectToSpotify} from "./redirectToSpotify";
-import {exchangeToken} from "./exchangeToken";
-import {generateRandomString} from "./generateRandomString";
-import {saveToken} from "./saveToken";
+import {SpotifyApi} from "@spotify/web-api-ts-sdk";
 
 const redirectUri = location.href.split("?")[0];
 const code = new URLSearchParams(location.search).get('code')!;
 const clientId = new URLSearchParams(location.search).get('clientId')!;
 const sessionId = new URLSearchParams(location.search).get('sessionId')!;
+const scopes = [
+    'user-read-private',
+    'user-read-email',
+    'user-read-playback-state',
+    'user-read-currently-playing',
+    'user-modify-playback-state'
+];
 
 if (code) {
-    const clientId = localStorage.getItem("clientId")!;
-    const codeVerifier = localStorage.getItem("codeVerifier")!;
     const sessionId = localStorage.getItem("sessionId")!;
-    exchangeToken(clientId, codeVerifier, redirectUri, code).then(token => saveToken(sessionId, token));
+    const clientId = localStorage.getItem("clientId")!;
+    const api = SpotifyApi.withUserAuthorization(clientId, redirectUri, scopes);
+    api.authenticate().then(response => {
+        if (response.authenticated) {
+            localStorage.clear();
+            fetch(`backend.php?sessionId=${sessionId}`, {
+                body: JSON.stringify(response.accessToken),
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then(() => {
+                window.close();
+                const div = document.body.appendChild(document.createElement("div"));
+                div.innerHTML = "Logowanie się powiodło, możesz zamknąć stronę.";
+            })
+        }
+    })
 } else if (sessionId && clientId) {
-    const codeVerifier = generateRandomString(64);
-    localStorage.setItem("clientId", clientId);
-    localStorage.setItem("codeVerifier", codeVerifier);
+    localStorage.clear();
     localStorage.setItem("sessionId", sessionId);
-    redirectToSpotify(clientId, redirectUri, codeVerifier);
+    localStorage.setItem("clientId", clientId);
+    const api = SpotifyApi.withUserAuthorization(clientId, redirectUri, scopes);
+    api.authenticate();
 }
 
 

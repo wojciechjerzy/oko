@@ -4,7 +4,8 @@ import {consume} from "@lit-labs/context";
 import {type ApplicationContext, applicationContext} from "../../ApplicationContext";
 import {ifNotNull} from "../../utils/ifDefined";
 import QRCode from "qrcode";
-import {Track} from "@spotify/web-api-ts-sdk";
+import {SpotifyApi, Track} from "@spotify/web-api-ts-sdk";
+import {clientId} from "./ClientId";
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -49,6 +50,7 @@ export class SpotifyPage extends LitElement {
         }
 
         .qr {
+            cursor: pointer;
             position: absolute;
             left: calc(50% - 200px);
             top: calc(50% - 200px);
@@ -310,14 +312,11 @@ export class SpotifyPage extends LitElement {
 
     private generateQrCode() {
         return html`
-            <a
-                    target="_blank"
-                    class="qr"
-                    href=${this.controllers.spotifyController.getUrl()}>
-                <img
-                        width="400"
-                        height="400"
-                        src=${this.qrUrl}/>
-            </a>`;
+            <img class="qr"
+                 @click=${() => this.controllers.spotifyController.tryAuth()}
+                 width="400"
+                 height="400"
+                 src=${this.qrUrl}/>
+        `;
     }
 }

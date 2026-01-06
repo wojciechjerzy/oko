@@ -1,70 +1,100 @@
-import type {AuthorizationInfo} from "./types/AuthorizationInfo";
 import {Devices, PlaybackState, SpotifyApi} from "@spotify/web-api-ts-sdk";
 import EventEmitter from "eventemitter3";
 import {clientId} from "./ClientId";
 import {ifDefined} from "../../utils/ifDefined";
 import {isDeviceSupportsVolume} from "./utils/IsDeviceSupportsVolume";
+import {generateRandomString} from "../../utils/generateRandomString";
+import {AccessToken} from "@spotify/web-api-ts-sdk/src/types";
+
 
 export class SpotifyController extends EventEmitter {
 
-    private sessionId: string = "";
-
-    token: AuthorizationInfo | null = null;
+    sessionId: string = generateRandomString(32);
     api: SpotifyApi | null = null;
     playbackState: PlaybackState | null = null;
     devices: Devices | null = null;
 
+
     constructor() {
         super();
-        this.newSession();
-        this.refreshToken();
-        setInterval(() => this.update(), 5000);
+        this.init();
     }
 
-    private newSession() {
-        this.sessionId = localStorage.getItem("sessionId") ?? Date.now().toString();
-        localStorage.setItem("sessionId", this.sessionId);
-        this.emit("update");
+    private get token(): AccessToken | null {
+        return JSON.parse(localStorage.getItem("refresh_token") ?? "null");
     }
 
-    async refreshToken() {
-        if (!this.token) {
-            await this.restoreToken();
+    private set token(value: AccessToken | null) {
+        if (value) {
+            localStorage.setItem("refresh_token", JSON.stringify(value))
+        } else {
+            localStorage.removeItem("refresh_token")
         }
+    }
 
-        if (!this.token) {
-            const result = await fetch(`https://teampretzels.com/spotify-redirect/backend.php?sessionId=${this.sessionId}`, {method: "GET"});
-            const response = await result.json() as AuthorizationInfo;
-            if (response) {
-                this.token = response;
-                await this.restoreToken();
-            }
-        }
-
-        if (this.token && !this.api) {
-            this.api = SpotifyApi.withAccessToken(clientId, this.token);
+    async init() {
+        const hashParams = new URLSearchParams(window.location.search);
+        const code = hashParams.get("code");
+        if (code) {
+            const api = SpotifyApi.withUserAuthorization(clientId, this.getRedirectUri(), this.getScopes());
             try {
-                await this.getPlaybackState();
+                const response = await api.authenticate();
+                if (response.authenticated) {
+                    this.token = await this.refreshToken(response.accessToken);
+                }
             } catch (error) {
-                console.error(error);
-                this.newSession();
-                this.api = null;
+                console.log("Nieudany odzysk");
+                console.log(error);
+                api.logOut();
+                this.token = null;
+            }
+        }
+        if (this.token) {
+            try {
+                console.log("Restore z pamięci");
+                this.token = await this.refreshToken(this.token);
+                console.log("Udany restore z pamięci");
+            } catch (error) {
+                console.log("Nieudany restore z pamięci");
+                console.log(error);
+                this.token = null;
             }
         }
 
-        if (!this.token) {
-            setTimeout(() => this.refreshToken(), 1000);
+        while (!this.token) {
+            const result = await fetch(`https://teampretzels.com/spotify-redirect/backend.php?sessionId=${this.sessionId}`, {method: "GET"});
+            const response = await result.json() as AccessToken;
+            if (response) {
+                try {
+                    this.token = await this.refreshToken(response);
+                    console.log("Udany restore z serwera ");
+                } catch (error) {
+                    console.log("Nieudany restore z serwera");
+                    console.log(error);
+                    this.token = null;
+                    this.sessionId = generateRandomString(32);
+                    this.emit("update");
+                }
+            }
+            if (!this.token) {
+                console.log("Oczekiwanie na restore z serwera");
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
         }
+
+        this.api = SpotifyApi.withAccessToken(clientId, this.token);
+        setInterval(async () => {
+            this.api = null;
+            this.token = await this.refreshToken(this.token!);
+            this.api = SpotifyApi.withAccessToken(clientId, this.token!);
+        }, 30 * 60 * 1000) //Every half hour
+        setInterval(() => this.update(), 5000);
+        this.update();
     }
 
-    async restoreToken() {
-        const refreshToken = localStorage.getItem("refresh_token");
-        localStorage.removeItem("refresh_token");
-
-        if (!refreshToken) return;
-
+    private async refreshToken(token: AccessToken) {
+        const refreshToken = token.refresh_token;
         const url = "https://accounts.spotify.com/api/token";
-
         const payload = {
             method: 'POST',
             headers: {
@@ -78,16 +108,11 @@ export class SpotifyController extends EventEmitter {
         }
         const body = await fetch(url, payload);
         const response = await body.json();
-
         if (response.error) {
-            this.token = null;
-            this.newSession();
-        } else {
-            this.token = response;
-            localStorage.setItem("refresh_token", JSON.stringify(response.refresh_token));
+            throw response.error;
         }
+        return response;
     }
-
 
     async update() {
         ifDefined(this.api, async api => {
@@ -97,9 +122,9 @@ export class SpotifyController extends EventEmitter {
                 this.devices = await api.player.getAvailableDevices() ?? null;
                 this.emit("update");
             } catch (error) {
+                console.log("UPDATE Error");
                 console.error(error);
                 this.api = null;
-                this.newSession();
             }
         })
     }
@@ -161,6 +186,38 @@ export class SpotifyController extends EventEmitter {
     getUrl() {
         const url = "https://teampretzels.com/spotify-redirect/";
         return `${url}?sessionId=${this.sessionId}&clientId=${clientId}`;
+    }
+
+
+    async tryAuth() {
+
+        const api = SpotifyApi.withUserAuthorization(clientId, this.getRedirectUri(), this.getScopes());
+        try {
+            const response = await api.authenticate();
+            if (response.authenticated) {
+                this.token = await this.refreshToken(response.accessToken);
+            }
+        } catch (error) {
+            console.log("Nieudany odzysk");
+            console.log(error);
+            api.logOut();
+            this.token = null;
+            this.tryAuth();
+        }
+    }
+
+    private getScopes() {
+        return [
+            'user-read-private',
+            'user-read-email',
+            'user-read-playback-state',
+            'user-read-currently-playing',
+            'user-modify-playback-state'
+        ];
+    }
+
+    private getRedirectUri() {
+        return location.href.split("?")[0].replace("localhost", "127.0.0.1");
     }
 }
 

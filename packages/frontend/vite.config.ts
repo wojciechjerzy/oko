@@ -7,6 +7,10 @@ const ASSETS_TARGET_DIR = 'dist/assets';
 
 export default defineConfig({
     base: "./",
+    server: {
+        host: "0.0.0.0",
+        port: 8080
+    },
     build: {
         outDir: './dist',
         emptyOutDir: true

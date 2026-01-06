@@ -16,7 +16,8 @@ if (!$sessionId) {
     exit;
 }
 
-$filename = $dir . '/' . basename($sessionId) . '.json';
+$clearSessionId = preg_replace('/[^a-zA-Z0-9]/', '', basename($sessionId));
+$filename = $dir . '/' . $clearSessionId . '.json';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $body = file_get_contents('php://input');
@@ -29,5 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     header('Content-Type: application/json');
     echo file_exists($filename) ? file_get_contents($filename) : "null";
+    unlink($filename);
     exit;
 }
