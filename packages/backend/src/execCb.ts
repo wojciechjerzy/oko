@@ -1,0 +1,1 @@
+export type ExecCb = (error: Error | null, stdout: string, stderr: string) => void;

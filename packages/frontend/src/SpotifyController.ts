@@ -7,7 +7,7 @@ import {isDeviceSupportsVolume} from "./IsDeviceSupportsVolume";
 
 export class SpotifyController extends EventEmitter {
 
-    private sessionId: string;
+    private sessionId: string = "";
 
     token: AuthorizationInfo | null = null;
     api: SpotifyApi | null = null;
@@ -25,6 +25,7 @@ export class SpotifyController extends EventEmitter {
     private newSession() {
         this.sessionId = localStorage.getItem("sessionId") ?? Date.now().toString();
         localStorage.setItem("sessionId", this.sessionId);
+        this.update();
     }
 
     async refreshToken() {
@@ -47,10 +48,15 @@ export class SpotifyController extends EventEmitter {
 
         if (this.token && !this.api) {
             this.api = SpotifyApi.withAccessToken(clientId, this.token);
-            this.emit("update");
-            console.log("Token updated");
-            setInterval(() => this.update(), 5000);
-            this.update()
+            this.api.player.getPlaybackState().then(playbackState => {
+                this.playbackState = playbackState;
+                this.emit("update");
+                setInterval(() => this.update(), 5000);
+            }).catch(() => {
+                console.log("Token expired");
+                this.newSession();
+                return this.api = null;
+            });
         }
 
         if (!this.token) {
@@ -91,8 +97,9 @@ export class SpotifyController extends EventEmitter {
 
     async update(): Promise<any> {
         ifDefined(this.api, async api => {
-            this.devices = await api.player.getAvailableDevices() ?? null;
             this.playbackState = await api.player.getPlaybackState("PL") ?? null;
+            this.emit("update");
+            this.devices = await api.player.getAvailableDevices() ?? null;
             this.emit("update");
         })
     }

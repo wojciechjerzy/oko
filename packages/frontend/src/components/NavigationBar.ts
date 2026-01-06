@@ -1,6 +1,5 @@
 import {css, html, LitElement} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import {ifDefined} from "../utils/ifDefined.js";
 
 export type Button =
     {
@@ -12,22 +11,19 @@ export type Button =
 export class NavigationBar extends LitElement {
     static styles = css`
         :host {
+        }
 
+        .content {
+            display: flex;
+            transform: translateX(-50%);
         }
 
         .button {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-        }
-
-        .buttonContent {
-            position: absolute;
             background-color: rgba(255, 255, 255, .5);
             left: -50px;
-            top: calc(-50px + 490px);
-            width: 100px;
-            height: 100px;
+            margin: 10px;
+            width: 50px;
+            height: 50px;
             display: flex;
             flex-direction: row;
             flex-wrap: nowrap;
@@ -40,19 +36,19 @@ export class NavigationBar extends LitElement {
     `;
 
     @property({type: Array})
-    accessor buttons!: Button[];
+    accessor buttons: Button[] = [];
 
     render() {
-        return ifDefined(this.buttons, buttons => {
-            return buttons.map((button, index, array) => {
-                return html`
-                    <div class="button" style="rotate:${index * 20}deg">
-                        <div class="buttonContent" style="rotate:${-index * 20}deg"
+        return html`
+            <div class="content">
+                ${this.buttons.map((button, index, array) => {
+                    return html`
+                        <div class="button"
                              @click=${() => button.onClick()}>${button.name}
                         </div>
-                    </div>`
-            })
-        });
+                    `
+                })}
+            </div>`
     }
 }
 

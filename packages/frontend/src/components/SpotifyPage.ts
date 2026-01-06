@@ -1,4 +1,4 @@
-import {css, html, LitElement, type PropertyValues} from 'lit';
+import {css, html, LitElement} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
 import {consume} from "@lit-labs/context";
 import {type Controllers, controllersContext} from "../SpotifyContext.js";
@@ -29,15 +29,15 @@ export class SpotifyPage extends LitElement {
             width: 400px;
             height: 40px;
             left: calc(50% - 200px);
-            top: calc(50% - 20px + 40px);
+            bottom: 120px;
         }
 
         .volume {
             position: absolute;
-            width: 400px;
+            width: 200px;
             height: 40px;
-            left: calc(50% - 200px);
-            top: calc(50% - 20px);
+            left: calc(50% - 100px);
+            bottom: 280px;
         }
 
         .qr {
@@ -137,17 +137,18 @@ export class SpotifyPage extends LitElement {
             display: flex;
             width: 100%;
             height: 100px;
-            top: 75%;
+            bottom: 180px;
             justify-content: center;
 
         }
 
         .next {
+            font-size: 24px;
             color: white;
             cursor: pointer;
             display: flex;
-            width: 100px;
-            height: 100px;
+            width: 60px;
+            height: 60px;
             border: solid 2px white;
             background-color: rgba(255, 255, 255, 10%);
             border-radius: 50px;
@@ -165,12 +166,10 @@ export class SpotifyPage extends LitElement {
 
     connectedCallback() {
         super.connectedCallback();
-        this.controllers.spotifyController.addListener("update", () => this.requestUpdate());
-    }
-
-    protected firstUpdated(_changedProperties: PropertyValues) {
-        super.firstUpdated(_changedProperties);
-        QRCode.toDataURL(this.controllers.spotifyController.getUrl()).then(url => this.qrUrl = url);
+        this.controllers.spotifyController.addListener("update", () => {
+            this.requestUpdate();
+            QRCode.toDataURL(this.controllers.spotifyController.getUrl()).then(url => this.qrUrl = url);
+        });
     }
 
     render() {
@@ -196,16 +195,22 @@ export class SpotifyPage extends LitElement {
                                  style="background-image: url('${trackItem.album.images[0].url}')"></div>
                             <div class="vinylDot"></div>
                         </div>
-                        <div class="controllers">
-                            <div class="next" @click=${() => spotifyController.previous()}>previous
-                            </div>
-                            <div class="next" @click=${() => spotifyController.pause()}>pause</div>
-                            <div class="next" @click=${() => spotifyController.next()}>next</div>
-                        </div>
                     `
 
                 }
             })}
+            <div class="controllers">
+                <div class="next" @click=${() => spotifyController.previous()}>◀◀
+                </div>
+                ${
+                        spotifyController.playbackState?.is_playing
+                                ? html`
+                                    <div class="next" @click=${() => spotifyController.pause()}>❚❚</div>`
+                                : html`
+                                    <div class="next" @click=${() => spotifyController.pause()}>▶</div>`
+                }
+                <div class="next" @click=${() => spotifyController.next()}>▶▶</div>
+            </div>
             ${this.renderSelect()}
             ${this.renderVolume()}
         `
@@ -213,9 +218,8 @@ export class SpotifyPage extends LitElement {
 
     private renderVolume() {
         let spotifyController = this.controllers.spotifyController;
-        const activeDevice = spotifyController.devices?.devices?.find(d => d.is_active);
+        const activeDevice = spotifyController.playbackState?.device;
         if (activeDevice) {
-
             return html` <input class="volume"
                                 type="range"
                                 min="0"

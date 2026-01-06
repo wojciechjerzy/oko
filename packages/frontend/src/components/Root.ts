@@ -24,6 +24,12 @@ export class Root extends LitElement {
             top: calc(50% - 540px);
             scale: calc(var(--size) / 1080);
         }
+
+        .navigation {
+            position: absolute;
+            left: 50%;
+            top: 50px;
+        }
     `;
 
     @provide({context: controllersContext})
@@ -36,7 +42,7 @@ export class Root extends LitElement {
         return html`
             ${when(this.page === "spotify", () => html`
                 <spotify-page></spotify-page>`)}
-            <navigation-bar .buttons=${[
+            <navigation-bar class="navigation" .buttons=${[
                 {
                     name: "Spotify",
                     onClick: () => this.page = "spotify"
@@ -44,6 +50,9 @@ export class Root extends LitElement {
                 {
                     name: "Refresh",
                     onClick: () => location.reload()
+                }, {
+                    name: "☾",
+                    onClick: () => fetch("http://localhost:2137/sleep")
                 },
             ]}></navigation-bar>
         `;

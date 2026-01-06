@@ -10,7 +10,6 @@
     "server": "php -S localhost:8080"
   },
   "dependencies": {
-    "@wojciechjerzy/oko-shared": "0.0.0",
     "vite": "^7.3.0"
   }
 }
