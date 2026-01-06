@@ -10,5 +10,6 @@ app.use(cors());
 
 app.get("/info", info());
 app.get("/light", light());
+app.use(express.static("../frontend/dist"));
 
 app.listen(PORT, () => console.log(`Sleep server listening on http://localhost:${PORT}`));

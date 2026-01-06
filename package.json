@@ -7,7 +7,7 @@
     "packages/spotify"
   ],
   "scripts": {
-    "backend": "npm -w @wojciechjerzy/oko-backend run dev",
+    "run": "npm -w @wojciechjerzy/oko-backend run dev",
     "frontend-watch": "npm -w @wojciechjerzy/oko-frontend run watch",
     "frontend": "npm -w @wojciechjerzy/oko-frontend run dev",
     "spotify": "npm -w @wojciechjerzy/oko-spotify run dev"
