@@ -1,6 +1,6 @@
 import {css, html, LitElement} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import {ifDefined} from "../utils/ifDefined";
+import {ifDefined} from "../utils/ifDefined.js";
 
 export type Button =
     {
@@ -40,7 +40,7 @@ export class NavigationBar extends LitElement {
     `;
 
     @property({type: Array})
-    buttons?: Button[];
+    accessor buttons!: Button[];
 
     render() {
         return ifDefined(this.buttons, buttons => {
@@ -48,7 +48,7 @@ export class NavigationBar extends LitElement {
                 return html`
                     <div class="button" style="rotate:${index * 20}deg">
                         <div class="buttonContent" style="rotate:${-index * 20}deg"
-                             @click=${()=>button.onClick()}>${button.name}
+                             @click=${() => button.onClick()}>${button.name}
                         </div>
                     </div>`
             })

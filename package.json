@@ -1,41 +1,17 @@
 {
-  "name": "my-webpack-project",
-  "version": "1.0.0",
-  "description": "My webpack project",
-  "main": "index.js",
+  "name": "@wojciechjerzy/oko",
+  "private": true,
+  "workspaces": [
+    "packages/frontend",
+    "packages/spotify"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --mode=production --node-env=production",
-    "build:dev": "webpack --mode=development",
-    "build:prod": "webpack --mode=production --node-env=production",
-    "watch": "webpack --watch",
-    "serve": "webpack serve"
+    "frontend-watch": "npm -w @wojciechjerzy/oko-frontend run watch",
+    "frontend": "npm -w @wojciechjerzy/oko-frontend run dev",
+    "spotify": "npm -w @wojciechjerzy/oko-spotify run dev"
   },
-  "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/wojciechjerzy/oko.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/wojciechjerzy/oko/issues"
-  },
-  "homepage": "https://github.com/wojciechjerzy/oko#readme",
   "devDependencies": {
-    "@lit/context": "^1.1.2",
-    "@material/web": "^1.4.0",
-    "@webpack-cli/generators": "^3.0.7",
-    "copy-webpack-plugin": "^12.0.2",
-    "css-loader": "^7.1.1",
-    "html-webpack-plugin": "^5.6.0",
-    "lit": "^3.1.4",
-    "prettier": "^3.3.2",
-    "style-loader": "^4.0.0",
-    "ts-loader": "^9.5.1",
-    "typescript": "^5.5.2",
-    "webpack": "^5.92.1",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.0.4"
+    "concurrently": "^9.0.0",
+    "typescript": "^5.6.0"
   }
 }
