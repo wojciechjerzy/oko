@@ -1,12 +1,12 @@
-import {SpotifyController} from "./SpotifyController.js";
+import {SpotifyController} from "./modules/spotify/SpotifyController";
 import "./components/index.js";
-import {Root} from "./components/index.js";
+import "./modules/spotify/SpotifyPage";
+import {Root} from "./components";
 
 (async function () {
     document.body.style.margin = "0";
     document.body.style.padding = "0";
     document.body.style.overflow = "hidden";
-
 
     const root: Root = document.createElement("root-component");
     document.body.appendChild(root);

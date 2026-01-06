@@ -4,12 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "watch": "tsc --watch --noEmit",
-    "build": "vite build --watch",
-    "dev": "tsx src/index.ts --watch"
+    "start": "tsx src/index.ts --watch"
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "tsx": "^4.21.0"
   }
 }

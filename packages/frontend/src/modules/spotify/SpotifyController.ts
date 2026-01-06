@@ -1,9 +1,9 @@
-import type {AuthorizationInfo} from "./AuthorizationInfo.js";
+import type {AuthorizationInfo} from "./types/AuthorizationInfo";
 import {Devices, PlaybackState, SpotifyApi} from "@spotify/web-api-ts-sdk";
 import EventEmitter from "eventemitter3";
 import {clientId} from "./ClientId";
-import {ifDefined} from "./utils/ifDefined";
-import {isDeviceSupportsVolume} from "./IsDeviceSupportsVolume";
+import {ifDefined} from "../../utils/ifDefined";
+import {isDeviceSupportsVolume} from "./utils/IsDeviceSupportsVolume";
 
 export class SpotifyController extends EventEmitter {
 
@@ -31,7 +31,7 @@ export class SpotifyController extends EventEmitter {
     async refreshToken() {
         if (!this.token) {
 
-            var refreshToken = localStorage.getItem("refresh_token");
+            const refreshToken = localStorage.getItem("refresh_token");
             if (refreshToken) {
                 await this.getRefreshToken();
             }
@@ -128,7 +128,7 @@ export class SpotifyController extends EventEmitter {
 
     async pause() {
         ifDefined(await this.getActiveDeviceId(), async deviceId => {
-            let playbackState = this.playbackState;
+            const playbackState = this.playbackState;
             if (playbackState?.is_playing) {
                 await this.api?.player.pausePlayback(deviceId);
             } else if (deviceId) {
@@ -139,15 +139,15 @@ export class SpotifyController extends EventEmitter {
 
 
     private async getActiveDeviceId() {
-        let activeDevice = await this.getActiveDevice();
-        let deviceId = activeDevice?.id;
+        const activeDevice = await this.getActiveDevice();
+        const deviceId = activeDevice?.id;
         return deviceId;
     }
 
     private async getActiveDevice() {
         if (this.playbackState?.device) return this.playbackState.device;
         this.devices = await this.api?.player.getAvailableDevices() ?? null;
-        let activeDevice = this.devices?.devices?.find(d => d.is_active);
+        const activeDevice = this.devices?.devices?.find(d => d.is_active);
         return activeDevice;
     }
 
@@ -158,7 +158,7 @@ export class SpotifyController extends EventEmitter {
     }
 
     getUrl() {
-        let url = "https://teampretzels.com/spotify-redirect/";
+        const url = "https://teampretzels.com/spotify-redirect/";
         return `${url}?sessionId=${this.sessionId}&clientId=${clientId}`;
     }
 }

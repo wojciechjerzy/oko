@@ -1,7 +1,7 @@
 import {css, html, LitElement, type TemplateResult} from 'lit'
 import {provide} from "@lit-labs/context";
 import {customElement, state} from 'lit/decorators.js'
-import {type Controllers, controllersContext} from "../SpotifyContext.js";
+import {type ApplicationContext, applicationContext} from "../ApplicationContext";
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -32,8 +32,8 @@ export class Root extends LitElement {
         }
     `;
 
-    @provide({context: controllersContext})
-    accessor controllers!: Controllers;
+    @provide({context: applicationContext})
+    accessor controllers!: ApplicationContext;
 
     @state()
     accessor page: string = "spotify"
@@ -46,6 +46,9 @@ export class Root extends LitElement {
                 {
                     name: "Spotify",
                     onClick: () => this.page = "spotify"
+                }, {
+                    name: "[]",
+                    onClick: () => document.body.requestFullscreen()
                 },
                 {
                     name: "Refresh",

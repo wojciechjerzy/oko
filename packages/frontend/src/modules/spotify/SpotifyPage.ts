@@ -1,8 +1,8 @@
 import {css, html, LitElement} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
 import {consume} from "@lit-labs/context";
-import {type Controllers, controllersContext} from "../SpotifyContext.js";
-import {ifNotNull} from "../utils/ifDefined.js";
+import {type ApplicationContext, applicationContext} from "../../ApplicationContext";
+import {ifNotNull} from "../../utils/ifDefined";
 import QRCode from "qrcode";
 import {Track} from "@spotify/web-api-ts-sdk";
 
@@ -38,6 +38,14 @@ export class SpotifyPage extends LitElement {
             height: 40px;
             left: calc(50% - 100px);
             bottom: 280px;
+        }
+
+        .light {
+            position: absolute;
+            width: 200px;
+            height: 40px;
+            left: calc(50% - 100px);
+            top: 140px;
         }
 
         .qr {
@@ -158,11 +166,14 @@ export class SpotifyPage extends LitElement {
         }
     `;
 
-    @consume({context: controllersContext, subscribe: true})
-    accessor controllers!: Controllers;
+    @consume({context: applicationContext, subscribe: true})
+    accessor controllers!: ApplicationContext;
 
     @state()
     accessor qrUrl: string | null = null;
+
+    @state()
+    accessor light: number = 100;
 
     connectedCallback() {
         super.connectedCallback();
@@ -170,22 +181,22 @@ export class SpotifyPage extends LitElement {
             this.requestUpdate();
             QRCode.toDataURL(this.controllers.spotifyController.getUrl()).then(url => this.qrUrl = url);
         });
+        QRCode.toDataURL(this.controllers.spotifyController.getUrl()).then(url => this.qrUrl = url);
     }
 
     render() {
-        let spotifyController = this.controllers.spotifyController;
+        const spotifyController = this.controllers.spotifyController;
         if (!spotifyController.token) {
             return this.generateQrCode();
         }
 
-        var devices = spotifyController.devices;
-        let activeDeviceId = devices?.devices.find(d => d.is_active)?.id;
-        console.log(activeDeviceId);
+        const devices = spotifyController.devices;
+        const activeDeviceId = devices?.devices.find(d => d.is_active)?.id;
         return html`
 
             ${ifNotNull(spotifyController.playbackState, playbackState => {
                 if (playbackState.item?.type === "track") {
-                    let trackItem = playbackState.item as Track;
+                    const trackItem = playbackState.item as Track;
                     console.log(trackItem);
                     return html`
                         <div class="background">
@@ -213,11 +224,26 @@ export class SpotifyPage extends LitElement {
             </div>
             ${this.renderSelect()}
             ${this.renderVolume()}
+            ${this.renderLight()}
         `
     }
 
+    private renderLight() {
+        return html` <input class="light"
+                            type="range"
+                            min="0"
+                            max="100"
+                            @change=${(e: InputEvent) => {
+                                const target = e.target as HTMLInputElement;
+                                this.light = target.valueAsNumber;
+                                fetch(`http://localhost:2137/light?value=${this.light}`);
+                            }}
+                            .value=${this.light}/>`;
+
+    }
+
     private renderVolume() {
-        let spotifyController = this.controllers.spotifyController;
+        const spotifyController = this.controllers.spotifyController;
         const activeDevice = spotifyController.playbackState?.device;
         if (activeDevice) {
             return html` <input class="volume"
@@ -225,7 +251,7 @@ export class SpotifyPage extends LitElement {
                                 min="0"
                                 max="100"
                                 @change=${(e: InputEvent) => {
-                                    let target = e.target as HTMLInputElement;
+                                    const target = e.target as HTMLInputElement;
                                     return spotifyController.volume(target.valueAsNumber);
                                 }}
                                 .value=${activeDevice.volume_percent}/>`;
@@ -241,7 +267,7 @@ export class SpotifyPage extends LitElement {
             <select
                     class="deviceSelect"
                     @change=${(e: InputEvent) => {
-                        let deviceId = (e.target as HTMLSelectElement).value;
+                        const deviceId = (e.target as HTMLSelectElement).value;
                         if (deviceId) {
                             spotifyController.changeDevice(deviceId);
                         }
