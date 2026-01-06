@@ -164,6 +164,25 @@ export class SpotifyPage extends LitElement {
             align-items: center;
             justify-content: center;
         }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            position: absolute;
+            left: 50%;
+            top: 250px;
+            transform: translate(-50%, -50%);
+
+            .title {
+                font-size: 24px;
+            }
+
+            .artist {
+                font-size: 16px;
+            }
+        }
     `;
 
     @consume({context: applicationContext, subscribe: true})
@@ -205,6 +224,10 @@ export class SpotifyPage extends LitElement {
                             <div class="vinylContent ${playbackState.is_playing ? "isPlaying" : "isNotPlaying"}"
                                  style="background-image: url('${trackItem.album.images[0].url}')"></div>
                             <div class="vinylDot"></div>
+                            <div class="info">
+                                <div class="title"> ${trackItem.name}</div>
+                                <div class="artist"> ${trackItem.artists.map(a => a.name).join(", ")}</div>
+                            </div>
                         </div>
                     `
 

@@ -18,45 +18,38 @@ export class SpotifyController extends EventEmitter {
         super();
         this.newSession();
         this.refreshToken();
-        // @ts-ignore
-        window.s = this;
+        setInterval(() => this.update(), 5000);
     }
 
     private newSession() {
         this.sessionId = localStorage.getItem("sessionId") ?? Date.now().toString();
         localStorage.setItem("sessionId", this.sessionId);
-        this.update();
+        this.emit("update");
     }
 
     async refreshToken() {
         if (!this.token) {
+            await this.restoreToken();
+        }
 
-            const refreshToken = localStorage.getItem("refresh_token");
-            if (refreshToken) {
-                await this.getRefreshToken();
-            }
-
-            if (!this.token) {
-                const result = await fetch(`https://teampretzels.com/spotify-redirect/backend.php?sessionId=${this.sessionId}`, {method: "GET"});
-                const response = await result.json() as AuthorizationInfo;
-                if (response) {
-                    this.token = response;
-                    await this.getRefreshToken();
-                }
+        if (!this.token) {
+            const result = await fetch(`https://teampretzels.com/spotify-redirect/backend.php?sessionId=${this.sessionId}`, {method: "GET"});
+            const response = await result.json() as AuthorizationInfo;
+            if (response) {
+                this.token = response;
+                await this.restoreToken();
             }
         }
 
         if (this.token && !this.api) {
             this.api = SpotifyApi.withAccessToken(clientId, this.token);
-            this.api.player.getPlaybackState().then(playbackState => {
-                this.playbackState = playbackState;
-                this.emit("update");
-                setInterval(() => this.update(), 5000);
-            }).catch(() => {
-                console.log("Token expired");
+            try {
+                await this.getPlaybackState();
+            } catch (error) {
+                console.error(error);
                 this.newSession();
-                return this.api = null;
-            });
+                this.api = null;
+            }
         }
 
         if (!this.token) {
@@ -64,11 +57,12 @@ export class SpotifyController extends EventEmitter {
         }
     }
 
-    async getRefreshToken() {
-        if (!this.token) return;
+    async restoreToken() {
         const refreshToken = localStorage.getItem("refresh_token");
         localStorage.removeItem("refresh_token");
+
         if (!refreshToken) return;
+
         const url = "https://accounts.spotify.com/api/token";
 
         const payload = {
@@ -95,12 +89,18 @@ export class SpotifyController extends EventEmitter {
     }
 
 
-    async update(): Promise<any> {
+    async update() {
         ifDefined(this.api, async api => {
-            this.playbackState = await api.player.getPlaybackState("PL") ?? null;
-            this.emit("update");
-            this.devices = await api.player.getAvailableDevices() ?? null;
-            this.emit("update");
+            try {
+                this.playbackState = await api.player.getPlaybackState("PL") ?? null;
+                this.emit("update");
+                this.devices = await api.player.getAvailableDevices() ?? null;
+                this.emit("update");
+            } catch (error) {
+                console.error(error);
+                this.api = null;
+                this.newSession();
+            }
         })
     }
 
@@ -127,30 +127,31 @@ export class SpotifyController extends EventEmitter {
     }
 
     async pause() {
-        ifDefined(await this.getActiveDeviceId(), async deviceId => {
-            const playbackState = this.playbackState;
-            if (playbackState?.is_playing) {
-                await this.api?.player.pausePlayback(deviceId);
-            } else if (deviceId) {
-                await this.api?.player.startResumePlayback(deviceId)
-            }
+        ifDefined(await this.getPlaybackState(), async playbackState => {
+            await ifDefined(playbackState.device.id, deviceId => playbackState.is_playing
+                ? this.api?.player.pausePlayback(deviceId)
+                : this.api?.player.startResumePlayback(deviceId))
+            this.update();
         })
     }
 
-
-    private async getActiveDeviceId() {
-        const activeDevice = await this.getActiveDevice();
-        const deviceId = activeDevice?.id;
-        return deviceId;
+    private async getPlaybackState() {
+        return ifDefined(this.api, async api => {
+            this.playbackState = await api.player.getPlaybackState();
+            this.emit("update");
+            return this.playbackState;
+        })
     }
 
     private async getActiveDevice() {
-        if (this.playbackState?.device) return this.playbackState.device;
-        this.devices = await this.api?.player.getAvailableDevices() ?? null;
-        const activeDevice = this.devices?.devices?.find(d => d.is_active);
-        return activeDevice;
+        const playbackState = await this.getPlaybackState();
+        return playbackState?.device;
     }
 
+    private async getActiveDeviceId() {
+        const activeDevice = await this.getActiveDevice();
+        return activeDevice?.id;
+    }
 
     async changeDevice(deviceId: string) {
         await this.api?.player.transferPlayback([deviceId]);
