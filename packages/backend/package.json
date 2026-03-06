@@ -4,11 +4,21 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "tsx src/index.ts --watch"
+    "start": "tsx src/index.ts --watch",
+    "startDev": "tsx --conditions=dev src/index.ts --watch"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.2.1",
     "tsx": "^4.21.0"
+  },
+  "optionalDependencies": {
+    "rpi-ws281x": "^1.1.53"
+  },
+  "imports": {
+    "#led": {
+      "dev": "./src/rpi-ws281x-mock.ts",
+      "default": "rpi-ws281x"
+    }
   }
 }
