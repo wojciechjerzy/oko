@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "install-python": "sudo apt install python3-venv ; python3 -m venv ~/ws281env ; source ~/ws281env/bin/activate ; pip install pi5neo",
+    "install-python": "sudo apt install -y python3-venv python3-full && python3 -m venv ~/ws281env && ~/ws281env/bin/pip install pi5neo",
+    "start-python": "~/ws281env/bin/python consumer.py",
     "start": "tsx src/index.ts --watch"
   },
   "dependencies": {
