@@ -14,10 +14,17 @@ pixels = neopixel.NeoPixel(
     pixel_order=ORDER
 )
 
+# zgaś wszystko
 pixels.fill((0, 0, 0))
-pixels[0] = (255, 0, 0)    # pierwszy LED na czerwono
-pixels[1] = (0, 0, 0)      # drugi wyłączony
+
+# tylko pierwszy LED na czerwono
+pixels[0] = (255, 0, 0)
+
+# drugi LED wyłączony
+pixels[1] = (0, 0, 0)
+
 pixels.show()
 
+# zostaw stan
 while True:
     time.sleep(1)
