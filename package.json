@@ -10,7 +10,7 @@
     "install-dsi-4": "sudo bash -c \"grep -q 'vc4-kms-dsi-waveshare-panel-v2,4_0_inch_c' /boot/firmware/config.txt || echo '\ndtoverlay=vc4-kms-v3d\n#DSI1 Use\ndtoverlay=vc4-kms-dsi-waveshare-panel-v2,4_0_inch_c\n#DSI0 Use\n# dtoverlay=vc4-kms-dsi-waveshare-panel-v2,4_0_inch_c,dsi0' >> /boot/firmware/config.txt\"",
     "run": "npm -w @wojciechjerzy/oko-backend run dev",
     "frontend-watch": "npm -w @wojciechjerzy/oko-frontend run watch",
-    "frontend": "npm -w @wojciechjerzy/oko-frontend run dev & sleep 2 && chromium http://localhost:8080",
+    "frontend": "npm -w @wojciechjerzy/oko-frontend run dev & sleep 2 && chromium --password-store=basic --touch-events=enabled http://localhost:8080",
     "spotify": "npm -w @wojciechjerzy/oko-spotify run dev"
   },
   "devDependencies": {
