@@ -1,38 +1,12 @@
-import board
-import neopixel_spi as neopixel
-import time
+from pi5neo import Pi5Neo
 
-# Konfiguracja
-PIXEL_COUNT = 3  # Liczba diod
-PIXEL_PIN = board.SPI() # Używamy SPI
+# Initialize the Pi5Neo class with 10 LEDs and an SPI speed of 800kHz
+neo = Pi5Neo('/dev/spidev0.0', 10, 800)
 
-# Inicjalizacja taśmy
-pixels = neopixel.NeoPixel_SPI(PIXEL_PIN, PIXEL_COUNT, pixel_order=neopixel.GRB)
+# Fill the strip with a red color
+neo.fill_strip(255, 0, 0)
+neo.update_strip()  # Commit changes to the LEDs
 
-def set_color():
-    # Ustawienie kolorów (R, G, B)
-    pixels.fill((255, 0, 0)) # Czerwony
-    pixels.show()
-    time.sleep(1)
-
-    pixels.fill((0, 255, 0)) # Zielony
-    pixels.show()
-    time.sleep(1)
-
-    pixels.fill((0, 0, 255)) # Niebieski
-    pixels.show()
-    time.sleep(1)
-
-    # Czyszczenie
-    pixels.fill((0, 0, 0))
-    pixels.show()
-
-if __name__ == "__main__":
-    try:
-        print("Uruchamianie testu LED... Naciśnij Ctrl+C aby wyjść.")
-        while True:
-            set_color()
-    except KeyboardInterrupt:
-        pixels.fill((0, 0, 0))
-        pixels.show()
-        print("\nZatrzymano.")
+# Set the 5th LED to blue
+neo.set_led_color(4, 0, 0, 255)
+neo.update_strip()
