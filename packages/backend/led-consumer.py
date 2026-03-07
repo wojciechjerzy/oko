@@ -1,6 +1,7 @@
 import sys
 import json
 import time
+import signal
 from pi5neo import Pi5Neo
 
 neo = Pi5Neo('/dev/spidev0.0', 100, 800)
@@ -8,6 +9,20 @@ neo.set_led_color(0, 255, 255, 255)  # pierwszy biały
 for i in range(1, 100):
     neo.set_led_color(i, 0, 0, 0)     # reszta czarna
 neo.update_strip()
+
+def cleanup():
+    global neo
+    if neo:
+        for i in range(neo.num_leds):
+            neo.set_led_color(i, 0, 0, 0)
+        neo.update_strip()
+
+def handle_exit(signum, frame):
+    cleanup()
+    sys.exit(0)
+
+signal.signal(signal.SIGTERM, handle_exit)
+signal.signal(signal.SIGINT, handle_exit)
 
 for raw_data in sys.stdin:
     raw_data = raw_data.strip()
