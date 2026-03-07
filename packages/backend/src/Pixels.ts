@@ -50,7 +50,7 @@ export class Pixels {
         return new Promise((resolve, reject) => {
             const onData = (chunk: Buffer) => {
                 this.process.stdout.off("data", onData);
-                resolve(JSON.parse(chunk.toString()));
+                resolve(chunk.toString());
             };
 
             this.process.stdout.on("data", onData);

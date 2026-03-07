@@ -25,7 +25,7 @@ for raw_data in sys.stdin:
         for i in range(number_of_pixels):
             neo.set_led_color(i, 255, 255, 255)
             neo.update_strip()
-            time.sleep(0.1)
+            time.sleep(0.05)
             neo.set_led_color(i, 0, 0, 0)
 
         neo.update_strip()
