@@ -1,0 +1,9 @@
+{
+  "name": "@wojciechjerzy/led",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "install-": "sudo apt install python3-venv ; python3 -m venv ~/ws281env ; source ~/ws281env/bin/activate"
+  }
+}
