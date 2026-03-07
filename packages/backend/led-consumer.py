@@ -4,7 +4,7 @@ from pi5neo import Pi5Neo
 
 neo = Pi5Neo('/dev/spidev0.0', 1, 800)
 neo.set_led_color(0, 255, 255, 255)
-neo.show()
+neo.update_strip()
 
 for raw_data in sys.stdin:
     raw_data = raw_data.strip()
@@ -32,6 +32,6 @@ for raw_data in sys.stdin:
         for i, color in enumerate(pixels):
             neo.set_led_color(i, *color)
 
-        neo.show()
+        neo.update_strip()
 
         print(json.dumps({"status": "update_ok"}), flush=True)
