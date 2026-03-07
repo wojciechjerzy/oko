@@ -19,10 +19,17 @@ for raw_data in sys.stdin:
 
     if t == "init":
         number_of_pixels = payload.get("numberOfPixels")
+           neo = Pi5Neo('/dev/spidev0.0', number_of_pixels, 800)
 
-        neo = Pi5Neo('/dev/spidev0.0', number_of_pixels, 800)
+           for i in range(number_of_pixels):
+               neo.set_led_color(i, 255, 255, 255)
+               neo.update_strip()
+               time.sleep(0.1)
+               neo.set_led_color(i, 0, 0, 0)
 
-        print(json.dumps({"status": "init_ok"}), flush=True)
+           neo.update_strip()
+
+           print(json.dumps({"status": "init_ok"}), flush=True)
 
     elif t == "update":
         pixels = payload.get("pixels", [])
