@@ -4,21 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "tsx src/index.ts --watch",
-    "startDev": "tsx --conditions=dev src/index.ts --watch"
+    "install-python": "sudo apt install python3-venv ; python3 -m venv ~/ws281env ; source ~/ws281env/bin/activate ; pip install pi5neo",
+    "start": "tsx src/index.ts --watch"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.2.1",
     "tsx": "^4.21.0"
-  },
-  "optionalDependencies": {
-    "rpi-ws281x": "^1.1.53"
-  },
-  "imports": {
-    "#led": {
-      "dev": "./src/rpi-ws281x-mock.ts",
-      "default": "rpi-ws281x"
-    }
   }
 }
