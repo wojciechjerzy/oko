@@ -8,9 +8,9 @@ const options = {
     stripType: ws281x.stripType.WS2812
 };
 
-const channel = ws281x(20, options);
+const channel = ws281x(10, options);
 const colors = channel.array;
 
 // update color-values
-colors[42] = 0xffcc22;
+colors[0] = 0xffcc22;
 ws281x.render();
