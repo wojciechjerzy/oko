@@ -2,8 +2,10 @@ import sys
 import json
 from pi5neo import Pi5Neo
 
-neo = Pi5Neo('/dev/spidev0.0', 1, 800)
-neo.set_led_color(0, 255, 255, 255)
+neo = Pi5Neo('/dev/spidev0.0', 100, 800)
+neo.set_led_color(0, 255, 255, 255)  # pierwszy biały
+for i in range(1, 100):
+    neo.set_led_color(i, 0, 0, 0)    # reszta czarna
 neo.update_strip()
 
 for raw_data in sys.stdin:
