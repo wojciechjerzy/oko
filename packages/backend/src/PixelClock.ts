@@ -41,13 +41,12 @@ export class PixelClock {
                 pixels[i][2] = 0;
             }
             for (let i = 0; i < 4; i++) {
-                pixels[pixels.length / 4 * i][1] = 255;
+                pixels[pixels.length / 4 * i][2] = 64;
             }
 
             const now = new Date();
             const hour = now.getHours();
             const minute = now.getMinutes();
-            const second = now.getSeconds();
 
             const hourPixel =
                 Math.floor(((hour % 12) / 12) * numberOfPixels) % numberOfPixels;
@@ -55,13 +54,9 @@ export class PixelClock {
             const minutePixel =
                 Math.floor((minute / 60) * numberOfPixels) % numberOfPixels;
 
-            const secondPixel =
-                Math.floor((second / 60) * numberOfPixels) % numberOfPixels;
 
             pixels[hourPixel][0] = 255;
             pixels[minutePixel][0] = 255;
-            pixels[secondPixel][0] = 255;
-
 
             await this.pixels.update(pixels);
 
