@@ -49,10 +49,10 @@ export class PixelClock {
             const minute = now.getMinutes();
 
             const hourPixel =
-                Math.floor(((hour % 12) / 12) * numberOfPixels) % numberOfPixels;
+                (numberOfPixels - Math.floor(((hour % 12) / 12) * numberOfPixels)) % numberOfPixels;
 
             const minutePixel =
-                Math.floor((minute / 60) * numberOfPixels) % numberOfPixels;
+                (numberOfPixels - Math.floor((minute / 60) * numberOfPixels)) % numberOfPixels;
 
 
             pixels[hourPixel][0] = 255;
