@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
-import {info} from "./info";
-import {light} from "./light";
-import {Pixels} from "./Pixels.js";
+import {info} from "./info.js";
+import {light} from "./light.js";
+import {PixelClock} from "./PixelClock.js";
 
 const PORT = 2137;
 const app = express();
@@ -15,19 +15,7 @@ app.use(express.static("../frontend/dist"));
 
 app.listen(PORT, () => console.log(`Sleep server listening on http://localhost:${PORT}`));
 
-const pixels = new Pixels({
-    numberOfPixels: 24
-});
-try {
-    await pixels.initialize();
-    console.log("Pixels initialized")
-
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    await pixels.update([
-        [255, 0, 0],
-        [0, 255, 0],
-        [0, 0, 255]
-    ]);
-} catch {
-    console.log("Pixels not initialized")
-}
+await new PixelClock({numberOfPixels: 24})
+    .initialize()
+    .then(clock => clock.start())
+    .catch(() => console.log("Clock not working"));

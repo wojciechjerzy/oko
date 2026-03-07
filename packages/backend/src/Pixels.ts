@@ -5,7 +5,7 @@ import {Readable, Writable} from "stream";
 
 export class Pixels {
     private declare process: ChildProcessByStdio<Writable, Readable, null>;
-    private numberOfPixels: number;
+    public numberOfPixels: number;
 
     constructor(config: { numberOfPixels: number }) {
         this.numberOfPixels = config.numberOfPixels;
