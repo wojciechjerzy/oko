@@ -41,7 +41,7 @@ export class PixelClock {
                 pixels[i][2] = 0;
             }
             for (let i = 0; i < 4; i++) {
-                pixels[pixels.length / 4 * i][2] = 64;
+                pixels[pixels.length / 4 * i][2] = 10;
             }
 
             const now = new Date();
