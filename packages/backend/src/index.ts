@@ -15,7 +15,7 @@ app.use(express.static("../frontend/dist"));
 
 app.listen(PORT, () => console.log(`Sleep server listening on http://localhost:${PORT}`));
 
-await new PixelClock({numberOfPixels: 24})
+await new PixelClock({numberOfPixels: 44})
     .initialize()
     .then(clock => clock.start())
     .catch(() => console.log("Clock not working"));
