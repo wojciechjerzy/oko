@@ -16,6 +16,7 @@ export function shutdown() {
             const result = execSync("sudo shutdown -h now").toString().trim();
             return res.json({
                 value: result
+
             });
         }
     };
