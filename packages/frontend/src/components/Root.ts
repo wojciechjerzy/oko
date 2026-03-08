@@ -53,6 +53,10 @@ export class Root extends LitElement {
                 {
                     name: "Refresh",
                     onClick: () => location.reload()
+                },
+                {
+                    name: "Shutdown",
+                    onClick: () => fetch("http://localhost:2137/shutdown")
                 }
             ]}></navigation-bar>
         `;
