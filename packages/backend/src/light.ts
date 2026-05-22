@@ -19,9 +19,11 @@ export function light() {
             const hasBacklight = backlightList.length > 0;
 
             if (hasWaveshare) {
-                execSync(`sudo python3 brightness.py ${brightness}`);
+                console.log("chaning brightness to waveshare")
+                console.log(execSync(`sudo python3 brightness.py ${brightness}`));
             } else if (hasBacklight) {
-                execSync(`echo ${brightness} | sudo tee /sys/class/backlight/${backlightList}/brightness`);
+                console.log("chaning brightness to backlight")
+                console.log(execSync(`echo ${brightness} | sudo tee /sys/class/backlight/${backlightList}/brightness`));
             }
         }
         return res.json({
