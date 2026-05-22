@@ -14,6 +14,7 @@ export function light() {
             //nothing
         } else {
             const lsusbOutput = execSync("lsusb 2>/dev/null || echo ''").toString();
+            console.log(lsusbOutput);
             const hasWaveshare = lsusbOutput.includes("ID 0712:000a");
             const backlightList = execSync("ls /sys/class/backlight/ 2>/dev/null || echo ''").toString().trim();
             const hasBacklight = backlightList.length > 0;
