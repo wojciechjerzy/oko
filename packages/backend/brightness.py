@@ -14,8 +14,10 @@ class BrightnessController:
 
         print("Device found")
 
+        self._driver_was_active = False
         try:
             if self.dev.is_kernel_driver_active(0):
+                self._driver_was_active = True
                 self.dev.detach_kernel_driver(0)
         except:
             pass
@@ -47,6 +49,10 @@ class BrightnessController:
         self._send(level)
 
         print(f"Brightness set to: {level}")
+
+        usb.util.dispose_resources(self.dev)
+        if self._driver_was_active:
+            self.dev.attach_kernel_driver(0)
 
 
 if __name__ == "__main__":
