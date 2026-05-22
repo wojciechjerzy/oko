@@ -6,7 +6,7 @@ export function light() {
 
         const value = Math.min(100, Math.max(0, parseFloat(req.query.value as string ?? "100"))) ?? 100;
         console.log(`readed value ${value}`)
-        const brightness = Math.min(255, Math.max(1, Math.floor(value / 100) * 255));
+        const brightness = Math.min(255, Math.max(1, Math.floor(value / 100 * 255)));
 
         const platform = process.platform;
         if (platform === "win32") {
