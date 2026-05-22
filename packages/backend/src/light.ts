@@ -5,6 +5,7 @@ export function light() {
     return (req: Request, res: Response) => {
 
         const value = Math.min(100, Math.max(0, parseFloat(req.query.value as string ?? "100"))) ?? 100;
+        console.log(`readed value ${value}`)
         const brightness = Math.min(255, Math.max(1, Math.floor(value / 100) * 255));
 
         const platform = process.platform;
@@ -20,7 +21,7 @@ export function light() {
             const hasBacklight = backlightList.length > 0;
 
             if (hasWaveshare) {
-                console.log("chaning brightness to waveshare")
+                console.log(`chaning brightness to waveshare ${brightness}`)
                 console.log(execSync(`sudo python3 brightness.py ${brightness}`));
             } else if (hasBacklight) {
                 console.log("chaning brightness to backlight")
