@@ -1,31 +1,31 @@
 import {Request, Response} from "express";
 import {execSync} from "child_process";
-import {readFileSync} from "fs";
 
 export function light() {
     return (req: Request, res: Response) => {
+
+        const value = Math.min(100, Math.max(0, parseFloat(req.query.value as string ?? "100"))) ?? 100;
+        const brightness = Math.min(255, Math.max(1, Math.floor(value / 100) * 255));
+
         const platform = process.platform;
         if (platform === "win32") {
-            return res.json({
-                value: 100
-            });
+            //nothing
         } else if (platform === "darwin") {
-            return res.json({
-                value: 100
-            });
+            //nothing
         } else {
-            const device = execSync("ls /sys/class/backlight/").toString().trim();
-            const rawValue = req.query.value;
-            if (rawValue) {
-                const normalized = Math.max(0, Math.min(100, rawValue ? parseInt(rawValue as string) : 0));
-                const brightness = Math.floor(1 + (normalized / 100) * 254);
-                execSync(`echo ${brightness} | sudo tee /sys/class/backlight/${device}/brightness`);
+            const lsusbOutput = execSync("lsusb 2>/dev/null || echo ''").toString();
+            const hasWaveshare = lsusbOutput.includes("ID 0712:000a");
+            const backlightList = execSync("ls /sys/class/backlight/ 2>/dev/null || echo ''").toString().trim();
+            const hasBacklight = backlightList.length > 0;
+
+            if (hasWaveshare) {
+                execSync(`sudo python3 brightness.py ${brightness}`);
+            } else if (hasBacklight) {
+                execSync(`echo ${brightness} | sudo tee /sys/class/backlight/${backlightList}/brightness`);
             }
-            const brightness = parseInt(readFileSync(`/sys/class/backlight/${device}/brightness`, {encoding: "utf8"}));
-            const normalized = Math.floor(brightness / 255 * 100);
-            return res.json({
-                value: normalized
-            });
         }
-    }; 
+        return res.json({
+            value: 100
+        });
+    };
 }
