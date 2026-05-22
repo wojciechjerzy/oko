@@ -2,6 +2,7 @@ import {css, html, LitElement, type TemplateResult} from 'lit'
 import {provide} from "@lit-labs/context";
 import {customElement, state} from 'lit/decorators.js'
 import {type ApplicationContext, applicationContext} from "../ApplicationContext";
+import {NavigationBar} from "./NavigationBar";
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -27,8 +28,10 @@ export class Root extends LitElement {
 
         .navigation {
             position: absolute;
-            left: 50%;
-            top: 50px;
+            width: 100%;
+            height: 100%;
+            left: 0px;
+            top: 0px;
         }
     `;
 
@@ -42,23 +45,35 @@ export class Root extends LitElement {
         return html`
             ${when(this.page === "spotify", () => html`
                 <spotify-page></spotify-page>`)}
-            <navigation-bar class="navigation" .buttons=${[
-                {
-                    name: "Spotify",
-                    onClick: () => this.page = "spotify"
-                }, {
-                    name: "[]",
-                    onClick: () => document.body.requestFullscreen()
-                },
-                {
-                    name: "Refresh",
-                    onClick: () => location.reload()
-                },
-                {
-                    name: "Shutdown",
-                    onClick: () => fetch("http://localhost:2137/shutdown")
-                }
-            ]}></navigation-bar>
+            ${
+                    NavigationBar.template({
+                        clazz: "navigation",
+                        buttons: [
+                            {
+                                name: "🕒",
+                                onClick: () => this.page = "clock"
+                            }, {
+                                name: "🎵",
+                                onClick: () => this.page = "spotify"
+                            }, {
+                                name: "📷",
+                                onClick: () => this.page = "photos"
+                            }, {
+                                name: "⚙️",
+                                onClick: () => this.page = "gear"
+                            },
+                            {
+                                name: "↻",
+                                onClick: () => location.reload()
+                            },
+                            {
+                                name: "⏻",
+                                onClick: () => fetch("http://localhost:2137/shutdown")
+                            }
+                        ],
+                        numberOfButtons: 24,
+                    })
+            }
         `;
     }
 }
