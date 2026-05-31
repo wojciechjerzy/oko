@@ -4,8 +4,7 @@ import {consume} from "@lit-labs/context";
 import {type ApplicationContext, applicationContext} from "../../ApplicationContext";
 import {ifNotNull} from "../../utils/ifDefined";
 import QRCode from "qrcode";
-import {SpotifyApi, Track} from "@spotify/web-api-ts-sdk";
-import {clientId} from "./ClientId";
+import {Track} from "@spotify/web-api-ts-sdk";
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -207,7 +206,7 @@ export class SpotifyPage extends LitElement {
 
     render() {
         const spotifyController = this.controllers.spotifyController;
-        if (!spotifyController.token) {
+        if (!(spotifyController as any).token) {
             return this.generateQrCode();
         }
 

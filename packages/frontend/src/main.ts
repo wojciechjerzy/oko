@@ -1,7 +1,4 @@
-import {SpotifyController} from "./modules/spotify/SpotifyController";
-import "./components/index.js";
-import "./modules/spotify/SpotifyPage";
-import {Root} from "./components";
+import {BrightnessController, ClockController, Root, SpotifyController} from "./index";
 
 (async function () {
     document.body.style.margin = "0";
@@ -12,7 +9,9 @@ import {Root} from "./components";
     document.body.appendChild(root);
 
     root.controllers = {
-        spotifyController: new SpotifyController()
+        spotifyController: new SpotifyController(),
+        clockController: new ClockController(),
+        brightnessController: new BrightnessController()
     };
 
     let prevWidth = NaN;

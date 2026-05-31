@@ -3,6 +3,7 @@ import {provide} from "@lit-labs/context";
 import {customElement, state} from 'lit/decorators.js'
 import {type ApplicationContext, applicationContext} from "../ApplicationContext";
 import {NavigationBar} from "./NavigationBar";
+import {ClockPage} from "../modules/clock/ClockPage";
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -16,6 +17,14 @@ function when(condition: boolean, callback: () => TemplateResult) {
 
 @customElement('root-component')
 export class Root extends LitElement {
+
+    static template({clazz}: { clazz: string }) {
+        return html`
+            <root-component class=${clazz}>
+
+            </root-component>`;
+    }
+
     static styles = css`
         :host {
             width: 1080px;
@@ -33,18 +42,36 @@ export class Root extends LitElement {
             left: 0px;
             top: 0px;
         }
+
+        .page {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
     `;
 
     @provide({context: applicationContext})
     accessor controllers!: ApplicationContext;
 
     @state()
-    accessor page: string = "spotify"
+    accessor page: string = localStorage.getItem("page") ?? "spotify";
+
+    override updated(changedProperties: Map<string | number | symbol, unknown>) {
+        super.updated(changedProperties);
+        if (changedProperties.has("page")) {
+            localStorage.setItem("page", this.page);
+        }
+    }
 
     render() {
         return html`
             ${when(this.page === "spotify", () => html`
                 <spotify-page></spotify-page>`)}
+            ${when(this.page === "clock", () => ClockPage.template({
+                clazz: "page"
+            }))}
             ${
                     NavigationBar.template({
                         clazz: "navigation",
