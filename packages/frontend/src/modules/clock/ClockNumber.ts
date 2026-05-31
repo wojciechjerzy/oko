@@ -10,13 +10,23 @@ declare global {
 @customElement("clock-number")
 export class ClockNumber extends LitElement {
 
-    static template({clazz, lastNumber, nextNumber}: { lastNumber: string, nextNumber: string, clazz: string }) {
+    static template({
+                        clazz, lastNumber, nextNumber,
+                        onClick
+                    }: {
+        lastNumber: string,
+        nextNumber: string,
+        clazz: string,
+        onClick: () => void
+    }) {
         console.log(lastNumber, nextNumber)
         return html`
             <clock-number
                     .lastNumber=${lastNumber}
                     .nextNumber=${nextNumber}
-                    class=${clazz}>
+                    class=${clazz}
+                    @click=${onClick}
+            >
             </clock-number>
         `;
     }

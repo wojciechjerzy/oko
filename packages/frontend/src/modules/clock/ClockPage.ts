@@ -100,22 +100,26 @@ export class ClockPage extends LitElement {
                     ${ClockNumber.template({
                         clazz: "firstHour number",
                         lastNumber: firstLastHour,
-                        nextNumber: firstHour
+                        nextNumber: firstHour,
+                        onClick: () => this.controllers.clockController.playHeeHee()
                     })}
                     ${ClockNumber.template({
                         clazz: "secondHour number",
                         lastNumber: secondLastHour,
-                        nextNumber: secondHour
+                        nextNumber: secondHour,
+                        onClick: () => this.controllers.clockController.playHeeHee()
                     })}
                     ${ClockNumber.template({
                         clazz: "firstMinute number",
                         lastNumber: firstLastMinute,
-                        nextNumber: firstMinute
+                        nextNumber: firstMinute,
+                        onClick: () => this.controllers.clockController.playHeeHee()
                     })}
                     ${ClockNumber.template({
                         clazz: "secondMinute number",
                         lastNumber: secondLastMinute,
-                        nextNumber: secondMinute
+                        nextNumber: secondMinute,
+                        onClick: () => this.controllers.clockController.playHeeHee()
                     })}
                 </div>
             </div>

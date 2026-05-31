@@ -1,4 +1,6 @@
-import {css, html, LitElement} from 'lit';
+import {css, html, LitElement, unsafeCSS} from 'lit';
+import recordUrl from '../../assets/record.jpg?url';
+import recordMaskUrl from '../../assets/record_mask.jpg?url';
 import {customElement, state} from 'lit/decorators.js';
 import {consume} from "@lit-labs/context";
 import {type ApplicationContext, applicationContext} from "../../ApplicationContext";
@@ -78,7 +80,7 @@ export class SpotifyPage extends LitElement {
             position: absolute;
             left: 0;
             top: 0;
-            background-image: url("assets/record.jpg");
+            background-image: url(${unsafeCSS(recordUrl)});
             width: 1080px;
             height: 1080px;
             animation-name: rotation;
@@ -99,7 +101,7 @@ export class SpotifyPage extends LitElement {
             left: 0;
             top: 0;
             position: absolute;
-            background-image: url("assets/record_mask.jpg");
+            background-image: url(${unsafeCSS(recordMaskUrl)});
             mix-blend-mode: overlay;
             background-position: center center;
             width: 1080px;
