@@ -66,7 +66,6 @@ export class ClockPage extends LitElement {
     @consume({context: applicationContext, subscribe: true})
     accessor controllers!: ApplicationContext;
 
-    private lastTime: number = 0;
     private now: number = 0;
 
     connectedCallback() {
@@ -81,15 +80,14 @@ export class ClockPage extends LitElement {
     }
 
     onMinute() {
-        this.lastTime = this.now;
         this.now = this.controllers.clockController.getTime();
         this.requestUpdate();
     }
 
     render() {
 
-        const [firstLastHour, secondLastHour] = this.controllers.clockController.getHours(this.lastTime).split("");
-        const [firstLastMinute, secondLastMinute] = this.controllers.clockController.getMinutes(this.lastTime).split("");
+        const [firstLastHour, secondLastHour] = this.controllers.clockController.getHours(this.now - 60000).split("");
+        const [firstLastMinute, secondLastMinute] = this.controllers.clockController.getMinutes(this.now - 60000).split("");
         const [firstHour, secondHour] = this.controllers.clockController.getHours(this.now).split("");
         const [firstMinute, secondMinute] = this.controllers.clockController.getMinutes(this.now).split("");
         return html`

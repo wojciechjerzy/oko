@@ -4,7 +4,7 @@ import {customElement, property} from 'lit/decorators.js';
 export type Button =
     {
         name: string
-        onClick: () => void
+        onClick: (menu: Button[]) => void
     }
 
 @customElement("navigation-bar")
@@ -103,7 +103,8 @@ export class NavigationBar extends LitElement {
                         <div
                                 class="button"
                                 style="--step:${index}; --steps:${this.numberOfButtons}"
-                                @click=${() => button.onClick()}>
+                                @mousedown=${(e: PointerEvent) => e.preventDefault()}
+                                @click=${() => button.onClick(this.buttons)}>
                             <div class="buttonBackground"></div>
                             <div class="buttonLabel">${button.name}</div>
                         </div>

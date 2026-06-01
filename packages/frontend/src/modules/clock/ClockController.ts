@@ -2,7 +2,7 @@ import {MyEvent} from "../../utils/MyEvent";
 import heeheeUrl from "../../assets/michael-jackson-hee-hee.mp3?url";
 
 export class ClockController {
-    public event: MyEvent = new MyEvent()
+    public event: MyEvent<void> = new MyEvent()
     private now: number = 0;
     private audio: HTMLAudioElement;
 

@@ -139,7 +139,6 @@ export class ClockNumber extends LitElement {
     accessor nextNumber: string = "0";
 
     updated(changed: Map<string, unknown>) {
-        console.log("U;dated");
         const up = this.shadowRoot?.querySelector<HTMLElement>('.prev.up')!;
         up.classList.remove('animating');
         up.offsetWidth; // reflow wymuszający reset animacji

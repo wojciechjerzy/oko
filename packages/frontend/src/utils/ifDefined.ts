@@ -5,6 +5,13 @@ export function ifDefined<T, RETURN_VALUE>(value: T | undefined | null, callback
     return undefined;
 }
 
+export function ifUndefined<T, RETURN_VALUE>(value: T | undefined | null, callback: () => RETURN_VALUE): RETURN_VALUE | undefined {
+    if (value === undefined) {
+        return callback()
+    }
+    return undefined;
+}
+
 
 export function ifNotNull<T, RETURN_VALUE>(value: T | null, callback: (value: T) => RETURN_VALUE): RETURN_VALUE | undefined {
     if (value !== null) {

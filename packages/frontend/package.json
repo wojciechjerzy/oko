@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "watch": "tsc --watch --noEmit",
+    "watch": "ctix build ; tsc --watch --noEmit",
     "build": "vite build --watch",
     "dev": "vite"
   },
