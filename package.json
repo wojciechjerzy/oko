@@ -8,7 +8,8 @@
   ],
   "scripts": {
     "install-dsi-4": "sudo bash -c \"grep -q 'vc4-kms-dsi-waveshare-panel-v2,4_0_inch_c' /boot/firmware/config.txt || echo '\ndtoverlay=vc4-kms-v3d\n#DSI1 Use\ndtoverlay=vc4-kms-dsi-waveshare-panel-v2,4_0_inch_c\n#DSI0 Use\n# dtoverlay=vc4-kms-dsi-waveshare-panel-v2,4_0_inch_c,dsi0' >> /boot/firmware/config.txt\"",
-    "run": "npm run backend & npm run frontend",
+    "run": "npm run clean-chromium && npm run backend & npm run frontend",
+    "clean-chromium": "sed -i 's/\"exited_cleanly\":false/\"exited_cleanly\":true/g; s/\"exit_type\":\"Crashed\"/\"exit_type\":\"Normal\"/g' ~/.config/chromium/Default/Preferences 2>/dev/null || true",
     "create-shortcut": "printf '[Desktop Entry]\\nType=Application\\nName=Oko\\nExec=lxterminal -e bash -i -c \"cd %s && ./run.sh; exec bash\"\\nTerminal=false\\n' \"$INIT_CWD\" > ~/Desktop/oko.desktop && chmod +x ~/Desktop/oko.desktop && echo 'Shortcut created: ~/Desktop/oko.desktop'",
     "add-autostart": "mkdir -p ~/.config/labwc && printf 'bash -i -c \"cd %s && ./run.sh\" &\\n' \"$INIT_CWD\" > ~/.config/labwc/autostart && echo 'Autostart installed: ~/.config/labwc/autostart'",
     "backend": "npm -w @wojciechjerzy/oko-backend run start",
