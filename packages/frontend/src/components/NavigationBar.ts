@@ -47,9 +47,9 @@ export class NavigationBar extends LitElement {
 
         .contentBorder {
             position: absolute;
-            width: 890px;
-            height: 890px;
-            background-color: rgba(255, 255, 255, 50%);
+            width: 884px;
+            height: 884px;
+            background-color: black;
             border-radius: 500px;
             left: 50%;
             top: 50%;

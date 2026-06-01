@@ -4,6 +4,7 @@ import {customElement, state} from 'lit/decorators.js'
 import {type ApplicationContext, applicationContext} from "../ApplicationContext";
 import {NavigationBar} from "./NavigationBar";
 import {ClockPage} from "../modules/clock/ClockPage";
+import {MoonPage} from "../modules/moon/MoonPage";
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -13,6 +14,10 @@ declare global {
 
 function when(condition: boolean, callback: () => TemplateResult) {
     if (condition) return callback();
+}
+
+function inlineSwitch(options: Record<string, () => TemplateResult>, value: string) {
+    return options[value]?.();
 }
 
 @customElement('root-component')
@@ -58,6 +63,10 @@ export class Root extends LitElement {
     @state()
     accessor page: string = localStorage.getItem("page") ?? "spotify";
 
+    @state()
+    accessor menu: boolean = false;
+
+
     override updated(changedProperties: Map<string | number | symbol, unknown>) {
         super.updated(changedProperties);
         if (changedProperties.has("page")) {
@@ -67,35 +76,75 @@ export class Root extends LitElement {
 
     render() {
         return html`
+            ${
+                    inlineSwitch({
+                        spotify: () => html`
+                            <spotify-page></spotify-page>`,
+                        clock: () => ClockPage.template({clazz: "page"}),
+                        moon: () => MoonPage.template({clazz: "page"}),
+                    }, this.page)
+            }
             ${when(this.page === "spotify", () => html`
                 <spotify-page></spotify-page>`)}
             ${when(this.page === "clock", () => ClockPage.template({
                 clazz: "page"
             }))}
             ${
+
                     NavigationBar.template({
                         clazz: "navigation",
-                        buttons: [
+                        buttons: this.menu ? [
                             {
                                 name: "🕒",
-                                onClick: () => this.page = "clock"
+                                onClick: () => {
+                                    this.page = "clock"
+                                    this.menu = this.menu = false;
+                                }
                             }, {
                                 name: "🎵",
-                                onClick: () => this.page = "spotify"
+                                onClick: () => {
+                                    this.page = "spotify"
+                                    this.menu = this.menu = false;
+                                }
                             }, {
                                 name: "📷",
-                                onClick: () => this.page = "photos"
+                                onClick: () => {
+                                    this.page = "photos"
+                                    this.menu = this.menu = false;
+                                }
+                            }, {
+                                name: "🌝",
+                                onClick: () => {
+                                    this.page = "moon"
+                                    this.menu = this.menu = false;
+                                }
                             }, {
                                 name: "⚙️",
-                                onClick: () => this.page = "gear"
+                                onClick: () => {
+                                    this.page = "gear"
+                                    this.menu = this.menu = false;
+                                }
                             },
                             {
                                 name: "↻",
-                                onClick: () => location.reload()
+                                onClick: () => {
+                                    location.reload()
+                                    this.menu = this.menu = false;
+                                }
                             },
                             {
                                 name: "⏻",
-                                onClick: () => fetch("http://localhost:2137/shutdown")
+                                onClick: () => {
+                                    fetch("http://localhost:2137/shutdown")
+                                    this.menu = this.menu = false;
+                                }
+                            }
+                        ] : [
+                            {
+                                name: "⋮",
+                                onClick: () => {
+                                    this.menu = true;
+                                }
                             }
                         ],
                         numberOfButtons: 24,
