@@ -13,7 +13,7 @@
     "create-shortcut": "printf '[Desktop Entry]\\nType=Application\\nName=Oko\\nExec=lxterminal -e bash -i -c \"cd %s && ./run.sh; exec bash\"\\nTerminal=false\\n' \"$INIT_CWD\" > ~/Desktop/oko.desktop && chmod +x ~/Desktop/oko.desktop && echo 'Shortcut created: ~/Desktop/oko.desktop'",
     "add-autostart": "mkdir -p ~/.config/labwc && printf 'bash -i -c \"cd %s && ./run.sh\" &\\n' \"$INIT_CWD\" > ~/.config/labwc/autostart && echo 'Autostart installed: ~/.config/labwc/autostart'",
     "backend": "npm -w @wojciechjerzy/oko-backend run start",
-    "frontend": "npm -w @wojciechjerzy/oko-frontend run dev & sleep 5 && chromium --start-fullscreen --no-first-run --disable-infobars --disable-session-crashed-bubble --password-store=basic --touch-events=enabled http://localhost:8080",
+    "frontend": "npm -w @wojciechjerzy/oko-frontend run dev & sleep 5 && chromium --no-first-run --disable-session-crashed-bubble --password-store=basic --touch-events=enabled http://localhost:8080",
     "spotify": "npm -w @wojciechjerzy/oko-spotify run dev"
   },
   "devDependencies": {
