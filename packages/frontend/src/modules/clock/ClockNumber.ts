@@ -140,12 +140,12 @@ export class ClockNumber extends LitElement {
 
     updated(changed: Map<string, unknown>) {
         console.log("U;dated");
-        const up = this.shadowRoot?.querySelector<HTMLElement>('.prev.up');
+        const up = this.shadowRoot?.querySelector<HTMLElement>('.prev.up')!;
         up.classList.remove('animating');
         up.offsetWidth; // reflow wymuszający reset animacji
         up.classList.add('animating');
 
-        const down = this.shadowRoot?.querySelector<HTMLElement>('.next.down');
+        const down = this.shadowRoot?.querySelector<HTMLElement>('.next.down')!;
         down.classList.remove('animating');
         down.offsetWidth; // reflow wymuszający reset animacji
         down.classList.add('animating');
