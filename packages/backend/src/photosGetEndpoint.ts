@@ -17,9 +17,8 @@ export function photosGetEndpoint() {
             const randomPhotoResponse = await fetch(image, {
                 headers: {'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1)'},
             });
-            const contentType = randomPhotoResponse.headers.get('content-type') || 'image/jpeg';
-            const base64 = Buffer.from(await randomPhotoResponse.arrayBuffer()).toString('base64');
-            res.json({contentType, base64});
+            res.setHeader('Content-Type', randomPhotoResponse.headers.get('content-type') || 'image/jpeg');
+            res.send(Buffer.from(await randomPhotoResponse.arrayBuffer()));
         }
     };
 }
