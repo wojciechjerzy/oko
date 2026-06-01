@@ -4,6 +4,12 @@ import {info} from "./info.js";
 import {light} from "./light.js";
 import {PixelClock} from "./PixelClock.js";
 import {shutdown} from "./shutdown.js";
+import {upgrade} from "./upgrade.js";
+import * as path from "path";
+import {fileURLToPath} from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = path.resolve(__dirname, "../../..");
 
 const PORT = 2137;
 const app = express();
@@ -13,6 +19,7 @@ app.use(cors());
 app.get("/info", info());
 app.get("/light", light());
 app.get("/shutdown", shutdown());
+app.get("/upgrade", upgrade(REPO_ROOT));
 app.use(express.static("../frontend/dist"));
 
 app.listen(PORT, () => console.log(`Sleep server listening on http://localhost:${PORT}`));

@@ -133,6 +133,13 @@ export class Root extends LitElement {
                                 }
                             },
                             {
+                                name: "↑",
+                                onClick: () => {
+                                    fetch("http://localhost:2137/upgrade")
+                                    this.menu = this.menu = false;
+                                }
+                            },
+                            {
                                 name: "⏻",
                                 onClick: () => {
                                     fetch("http://localhost:2137/shutdown")
