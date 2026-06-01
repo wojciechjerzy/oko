@@ -119,6 +119,12 @@ export class Root extends LitElement {
                                     this.menu = this.menu = false;
                                 }
                             }, {
+                                name: "F",
+                                onClick: () => {
+                                    document.body.requestFullscreen();
+                                    this.menu = false;
+                                }
+                            }, {
                                 name: "⚙️",
                                 onClick: () => {
                                     this.page = "gear"
