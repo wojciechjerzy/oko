@@ -11,7 +11,7 @@
     "run": "npm run backend & npm run frontend",
     "install": "mkdir -p ~/.config/autostart && printf '[Desktop Entry]\\nType=Application\\nName=Oko\\nExec=bash -c \"cd %s && npm run run\"\\nHidden=false\\n' \"$INIT_CWD\" > ~/.config/autostart/oko.desktop && echo 'Autostart installed: ~/.config/autostart/oko.desktop'",
     "backend": "npm -w @wojciechjerzy/oko-backend run start",
-    "frontend": "npm -w @wojciechjerzy/oko-frontend run dev & sleep 2 && chromium --password-store=basic --touch-events=enabled --kiosk http://localhost:8080",
+    "frontend": "npm -w @wojciechjerzy/oko-frontend run dev & sleep 2 && chromium --password-store=basic --touch-events=enabled http://localhost:8080",
     "spotify": "npm -w @wojciechjerzy/oko-spotify run dev"
   },
   "devDependencies": {
