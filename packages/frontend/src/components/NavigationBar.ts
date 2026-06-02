@@ -37,7 +37,7 @@ export class NavigationBar extends LitElement {
             display: flex;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 50%);
+            //background-color: rgba(0, 0, 0, 50%);
             mask: url("#navigation-mask");
             -webkit-mask: url("#navigation-mask");
             clip-path: url("#navigation-clipPath");
@@ -49,7 +49,7 @@ export class NavigationBar extends LitElement {
             position: absolute;
             width: 884px;
             height: 884px;
-            background-color: black;
+            //background-color: black;
             border-radius: 500px;
             left: 50%;
             top: 50%;

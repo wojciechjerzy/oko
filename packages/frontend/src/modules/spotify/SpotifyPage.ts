@@ -16,6 +16,15 @@ declare global {
 
 @customElement("spotify-page")
 export class SpotifyPage extends LitElement {
+
+    static template({clazz}: { clazz: string }) {
+        return html`
+            <spotify-page class=${clazz}>
+
+            </spotify-page>
+        `;
+    }
+
     static styles = css`
         :host {
             background-color: black;
@@ -320,4 +329,6 @@ export class SpotifyPage extends LitElement {
                  src=${this.qrUrl}/>
         `;
     }
+
+
 }

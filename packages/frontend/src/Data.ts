@@ -1,4 +1,6 @@
+import {Page} from "./Page";
+
 export type Data = {
-    page: string;
+    page: Page;
     photosUrl?: string;
 }

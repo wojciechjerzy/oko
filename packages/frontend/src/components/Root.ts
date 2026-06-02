@@ -5,6 +5,8 @@ import {type ApplicationContext, applicationContext} from "../ApplicationContext
 import {ClockPage} from "../modules/clock/ClockPage";
 import {MoonPage} from "../modules/moon/MoonPage";
 import {PhotoPage} from "../modules/photo/PhotoPage";
+import {SettingsPage} from "../modules/settings/SettingsPage";
+import {SpotifyPage} from "../modules/spotify/SpotifyPage";
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -80,11 +82,11 @@ export class Root extends LitElement {
         return html`
             ${
                     inlineSwitch({
-                        spotify: () => html`
-                            <spotify-page></spotify-page>`,
+                        spotify: () => SpotifyPage.template({clazz: "page"}),                       
                         clock: () => ClockPage.template({clazz: "page"}),
                         moon: () => MoonPage.template({clazz: "page"}),
                         photos: () => PhotoPage.template({clazz: "page"}),
+                        settings: () => SettingsPage.template({clazz: "page"}),
                     }, this.controllers.state.page.value)
             }
             ${this.controllers.menuController.render()}

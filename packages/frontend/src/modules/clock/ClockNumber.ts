@@ -19,7 +19,6 @@ export class ClockNumber extends LitElement {
         clazz: string,
         onClick: () => void
     }) {
-        console.log(lastNumber, nextNumber)
         return html`
             <clock-number
                     .lastNumber=${lastNumber}

@@ -6,6 +6,7 @@ import {
     Data,
     MenuController,
     ObservableValue,
+    Page,
     PhotoController,
     Root,
     SpotifyController,
@@ -23,8 +24,9 @@ import {
     const state: State = {
         photoUrl: new ObservableValue(data.photosUrl),
         menus: new ObservableValue<Button[][]>([]),
-        page: new ObservableValue(data.page ?? "clock"),
-        focusedElement: new ObservableValue<HTMLInputElement | undefined>(undefined)
+        page: new ObservableValue<Page>(data.page ?? "clock"),
+        focusedElement: new ObservableValue<HTMLInputElement | undefined>(undefined),
+        wifi: new ObservableValue<any>(undefined),
     };
 
     state.page.addListener((value) => {
@@ -36,6 +38,8 @@ import {
         data.photosUrl = value;
         localStorage.setItem("data", JSON.stringify(data));
     })
+
+    state.wifi.value = await communicationController.fetchInfo();
 
     const menuController = new MenuController({state});
     menuController.addButtons([
@@ -81,7 +85,7 @@ import {
                     }, {
                         name: "⚙️",
                         onClick: (menu) => {
-                            state.page.value = "gear"
+                            state.page.value = "settings"
                             menuController.removeMenu(menu)
                         }
                     },

@@ -1,10 +1,8 @@
 import {Request, Response} from "express";
-import os from "os";
 import {execSync} from "child_process";
 
-export function info() {
-    return (_req: Request, res: Response) => {
-
+export function wifi() {
+    return (req: Request, res: Response) => {
         const dir = "/etc/NetworkManager/system-connections";
         const files = execSync(`sudo ls ${dir}`).toString().trim().split("\n");
 
@@ -18,11 +16,6 @@ export function info() {
             })
             .filter(n => n.ssid);
 
-
-        res.json({
-            ok: true,
-            host: os.hostname(),
-            networks
-        });
+        res.json(networks);
     };
 }
