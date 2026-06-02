@@ -101,7 +101,7 @@ export class SettingsPage extends LitElement {
                             <td colspan="2">
                                 Dostępne sieci:<br/>
                                 ${this.controllers.state.wifi.value.availableNetworks
-                                        .sort((a, b) => a.signal - b.signal)
+                                        .sort((a, b) => b.signal - a.signal)
                                         .map(network => html`
                                             <div>${network.ssid}</div>`
                                         )}
