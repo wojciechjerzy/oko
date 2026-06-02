@@ -77,6 +77,12 @@ import {
                             menuController.removeMenu(menu)
                         }
                     }, {
+                        name: "CAT",
+                        onClick: (menu) => {
+                            state.page.value = "cat"
+                            menuController.removeMenu(menu)
+                        }
+                    }, {
                         name: "F",
                         onClick: (menu) => {
                             document.body.requestFullscreen();

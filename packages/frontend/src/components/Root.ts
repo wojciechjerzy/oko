@@ -7,6 +7,8 @@ import {MoonPage} from "../modules/moon/MoonPage";
 import {PhotoPage} from "../modules/photo/PhotoPage";
 import {SettingsPage} from "../modules/settings/SettingsPage";
 import {SpotifyPage} from "../modules/spotify/SpotifyPage";
+import {CatsPage} from "../modules/moon/CatsPage";
+import {Page} from "../Page";
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -18,7 +20,7 @@ function when(condition: boolean, callback: () => TemplateResult) {
     if (condition) return callback();
 }
 
-function inlineSwitch(options: Record<string, () => TemplateResult>, value: string) {
+function inlineSwitch<T extends string>(options: Record<T, () => TemplateResult>, value: T) {
     return options[value]?.();
 }
 
@@ -81,11 +83,12 @@ export class Root extends LitElement {
     render() {
         return html`
             ${
-                    inlineSwitch({
+                    inlineSwitch<Page>({
                         spotify: () => SpotifyPage.template({clazz: "page"}),
                         clock: () => ClockPage.template({clazz: "page"}),
-                        moon: () => MoonPage.template({clazz: "page"}),
                         photos: () => PhotoPage.template({clazz: "page"}),
+                        moon: () => MoonPage.template({clazz: "page"}),
+                        cat: () => CatsPage.template({clazz: "page"}),
                         settings: () => SettingsPage.template({clazz: "page"}),
                     }, this.controllers.state.page.value)
             }
