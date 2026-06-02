@@ -30,9 +30,8 @@ export class CatsPage extends LitElement {
         const response = await fetch(url);
         const json = await response.json();
         this.url = json[0].url;
-        console.log(this.url);
         if (this.isConnected) {
-            this.timeout = setTimeout(() => this.next(), 10000) as any;
+            this.timeout = setTimeout(() => this.next(), 60 * 60 * 1000) as any;
         }
     }
 
