@@ -1,7 +1,9 @@
+
 export * from './ApplicationContext';
 export * from './CommunicationController';
 export * from './Data';
 export * from './ObservableValue';
+export * from './Page';
 export * from './State';
 export * from './components/NavigationBar';
 export * from './components/Root';
@@ -20,4 +22,3 @@ export * from './modules/spotify/ClientId';
 export * from './modules/spotify/SpotifyController';
 export * from './modules/spotify/SpotifyPage';
 export * from './modules/spotify/utils/IsDeviceSupportsVolume';
-export * from "./Page";
