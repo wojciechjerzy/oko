@@ -1,5 +1,5 @@
 import {css, html, LitElement} from 'lit';
-import {customElement, state} from 'lit/decorators.js';
+import {customElement} from 'lit/decorators.js';
 import {consume} from "@lit-labs/context";
 import {type ApplicationContext, applicationContext} from "../../ApplicationContext";
 
@@ -39,6 +39,7 @@ export class SettingsPage extends LitElement {
         .settings {
             background-color: white;
             border-radius: 5px;
+            width: 400px;
         }
     `;
 
@@ -98,7 +99,12 @@ export class SettingsPage extends LitElement {
                         </tr>
                         <tr>
                             <td colspan="2">
-                                ${JSON.stringify(this.controllers.state.wifi.value)}
+                                Dostępne sieci:<br/>
+                                ${this.controllers.state.wifi.value.availableNetworks
+                                        .sort((a, b) => a.signal - b.signal)
+                                        .map(network => html`
+                                            <div>${network.ssid}</div>`
+                                        )}
                             </td>
                         </tr>
                         </tbody>

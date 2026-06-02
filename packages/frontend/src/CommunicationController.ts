@@ -4,6 +4,7 @@ export type Info = {
     ok: true
     host: string,
     networks: { ssid: string | null, psk: string | null }[]
+    availableNetworks: { ssid: string, signal: number }[]
 }
 
 
