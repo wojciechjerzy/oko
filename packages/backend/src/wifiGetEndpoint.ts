@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import {execSync} from "child_process";
 
-export function wifi() {
+export function wifiGetEndpoint() {
     return (req: Request, res: Response) => {
         const dir = "/etc/NetworkManager/system-connections";
         const files = execSync(`sudo ls ${dir}`).toString().trim().split("\n");

@@ -1,5 +1,5 @@
 import {css, html, LitElement} from 'lit';
-import {customElement} from 'lit/decorators.js';
+import {customElement, state} from 'lit/decorators.js';
 import {consume} from "@lit-labs/context";
 import {type ApplicationContext, applicationContext} from "../../ApplicationContext";
 
@@ -35,10 +35,16 @@ export class SettingsPage extends LitElement {
             justify-content: center;
             align-items: center;
         }
+
+        .settings {
+            background-color: white;
+            border-radius: 5px;
+        }
     `;
 
     @consume({context: applicationContext, subscribe: true})
     accessor controllers!: ApplicationContext;
+
 
     connectedCallback() {
         super.connectedCallback();
@@ -49,9 +55,55 @@ export class SettingsPage extends LitElement {
     }
 
     render() {
+        const network = {
+            ssid: this.controllers.state.wifi.value.networks[0]?.ssid ?? "",
+            psk: this.controllers.state.wifi.value.networks[0]?.psk ?? ""
+        };
         return html`
             <div class="content">
-                <input type="text" .value=${JSON.stringify(this.controllers.state.wifi.value)}/>
+                <div>
+                    <table class="settings">
+                        <tbody>
+                        <tr>
+                            <td colspan="3">WIFI</td>
+                        </tr>
+                        <tr>
+                            <td>Nazwa:</td>
+                            <td>
+                                <input type="text"
+                                       .value=${network?.ssid}
+                                       @focus=${(e: Event) => this.controllers.menuController.focus(e.target as HTMLInputElement)}
+                                       @input=${(e: InputEvent) => network.ssid = (e.target as HTMLInputElement).value}
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Hasło:</td>
+                            <td>
+                                <input type="text"
+                                       .value=${network?.psk}
+                                       @focus=${(e: Event) => this.controllers.menuController.focus(e.target as HTMLInputElement)}
+                                       @input=${(e: InputEvent) => network.psk = (e.target as HTMLInputElement).value}
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <button @click=${() => {
+                                    this.controllers.communicationController.saveWifi(network);
+                                    this.controllers.state.wifi.value.networks = [network];
+                                }}>Zapisz
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                ${JSON.stringify(this.controllers.state.wifi.value)}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>`
     }
 }

@@ -8,7 +8,9 @@ import {upgrade} from "./upgrade.js";
 import * as path from "path";
 import {fileURLToPath} from "url";
 import {photosGetEndpoint} from "./photosGetEndpoint.js";
-import {wifi} from "./wifi.js";
+import {wifiGetEndpoint} from "./wifiGetEndpoint.js";
+import {wifiPostEndpoint} from "./wifiPostEndpoint.js";
+import {wifisEndpoint} from "./wifisEndpoint.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, "../../..");
@@ -23,7 +25,9 @@ app.get("/light", light());
 app.get("/shutdown", shutdown());
 app.get("/upgrade", upgrade(REPO_ROOT));
 app.get("/photo", photosGetEndpoint())
-app.get("/wifi", wifi())
+app.get("/wifi", wifiGetEndpoint())
+app.post("/wifi", wifiPostEndpoint())
+app.get("/wifis", wifisEndpoint())
 app.use(express.static("../frontend/dist"));
 
 app.listen(PORT, () => console.log(`Sleep server listening on http://localhost:${PORT}`));

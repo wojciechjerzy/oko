@@ -2,10 +2,11 @@ import {Request, Response} from "express";
 import os from "os";
 import {execSync} from "child_process";
 import {isRaspberryPi} from "./isRaspberryPi.js";
+import {getWifis} from "./getWifis.js";
 
 function getNetworks() {
     if (!isRaspberryPi) {
-        return {ssid: null, psk: null}
+        return [{ssid: null, psk: null}]
     }
     const dir = "/etc/NetworkManager/system-connections";
     const files = execSync(`sudo ls ${dir}`).toString().trim().split("\n");
@@ -21,17 +22,26 @@ function getNetworks() {
         .filter(n => n.ssid);
 }
 
+export type Info = {
+    ok: true
+    host: string,
+    networks: { ssid: string | null, psk: string | null }[]
+    availableNetworks: { ssid: string }[]
+}
+
 export function info() {
-    return (_req: Request, res: Response) => {
+    return async (_req: Request, res: Response) => {
 
 
         const networks = getNetworks();
 
 
-        res.json({
+        const newVar: Info = {
             ok: true,
             host: os.hostname(),
-            networks
-        });
+            networks,
+            availableNetworks: await getWifis()
+        };
+        res.json(newVar);
     };
 }

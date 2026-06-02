@@ -1,9 +1,25 @@
 const rest = "http://localhost:2137/";
 
+export type Info = {
+    ok: true
+    host: string,
+    networks: { ssid: string | null, psk: string | null }[]
+}
+
+
 export class CommunicationController {
 
-    async fetchInfo() {
+    async fetchInfo(): Promise<Info> {
         const response = await fetch(rest + "info")
+        return await response.json();
+    }
+
+    async saveWifi(params: { ssid: string; psk: string }) {
+        const response = await fetch(rest + "wifi", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(params),
+        });
         return await response.json();
     }
 }

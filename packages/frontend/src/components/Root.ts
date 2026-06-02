@@ -82,7 +82,7 @@ export class Root extends LitElement {
         return html`
             ${
                     inlineSwitch({
-                        spotify: () => SpotifyPage.template({clazz: "page"}),                       
+                        spotify: () => SpotifyPage.template({clazz: "page"}),
                         clock: () => ClockPage.template({clazz: "page"}),
                         moon: () => MoonPage.template({clazz: "page"}),
                         photos: () => PhotoPage.template({clazz: "page"}),
