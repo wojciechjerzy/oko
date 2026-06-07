@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {execSync} from "child_process";
+import {execFileSync, execSync} from "child_process";
 import {isRaspberryPi} from "./isRaspberryPi.js";
 
 export function wifiPostEndpoint() {
@@ -9,7 +9,6 @@ export function wifiPostEndpoint() {
         console.log(`connecting to ${ssid} with psk ${psk}`)
         if (isRaspberryPi) {
 
-
             const existing = execSync("nmcli -t -f NAME,TYPE connection show")
                 .toString()
                 .trim()
@@ -18,15 +17,22 @@ export function wifiPostEndpoint() {
                 .map(line => line.split(":")[0]);
 
             for (const name of existing) {
-                execSync(`sudo nmcli connection delete "${name}"`);
+                execFileSync("sudo", ["nmcli", "connection", "delete", name]);
             }
 
             try {
-                const output = execSync(`sudo nmcli device wifi connect "${ssid}" password "${psk}" --wait -1`).toString();
+                execFileSync("sudo", [
+                    "nmcli", "connection", "add",
+                    "type", "wifi",
+                    "con-name", ssid,
+                    "ssid", ssid,
+                    "ifname", "wlan0",
+                    "wifi-sec.key-mgmt", "wpa-psk",
+                    "wifi-sec.psk", psk,
+                    "connection.autoconnect", "yes",
+                ]);
+                const output = execFileSync("sudo", ["nmcli", "connection", "up", ssid, "--wait", "-1"]).toString();
                 const connected = output.includes("successfully activated");
-                if (connected) {
-                    execSync(`sudo nmcli connection modify "${ssid}" connection.autoconnect yes`);
-                }
                 res.json({connected});
             } catch {
                 res.json({connected: false});
