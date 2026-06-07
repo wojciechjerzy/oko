@@ -1,4 +1,4 @@
-
+export * from '../vite.config';
 export * from './ApplicationContext';
 export * from './CommunicationController';
 export * from './Data';
@@ -14,6 +14,7 @@ export * from './modules/brightness/BrightnessController';
 export * from './modules/clock/ClockController';
 export * from './modules/clock/ClockNumber';
 export * from './modules/clock/ClockPage';
+export * from './modules/moon/CatsPage';
 export * from './modules/moon/MoonPage';
 export * from './modules/photo/PhotoController';
 export * from './modules/photo/PhotoPage';
