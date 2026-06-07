@@ -25,12 +25,12 @@ export function wifiPostEndpoint() {
                 .map(line => line.split(":")[0]);
 
             for (const name of existing) {
-                execFileSync("sudo", ["nmcli", "connection", "delete", name]);
+                execFileSync("nmcli", ["connection", "delete", name]);
             }
 
             try {
-                const addResutls = execFileSync("sudo", [
-                    "nmcli", "connection", "add",
+                const addResutls = execFileSync("nmcli", [
+                    "connection", "add",
                     "type", "wifi",
                     "con-name", ssid,
                     "ssid", ssid,
@@ -40,14 +40,14 @@ export function wifiPostEndpoint() {
                     "connection.autoconnect", "yes",
                 ]).toString();
 
-                const upResults = execFileSync("sudo", ["nmcli", "connection", "up", ssid, "--wait", "-1"]).toString();
+                const upResults = execFileSync("nmcli", ["connection", "up", ssid, "--wait", "-1"]).toString();
 
                 res.json({
                     addResutls,
                     upResults
                 });
-            } catch {
-                res.json({connected: false});
+            } catch (e) {
+                res.json({e});
             }
         }
     };
