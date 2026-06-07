@@ -1,4 +1,3 @@
-export * from '../vite.config';
 export * from './ApplicationContext';
 export * from './CommunicationController';
 export * from './Data';
