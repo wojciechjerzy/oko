@@ -7,14 +7,6 @@ export function wifiPostEndpoint() {
         const {ssid, psk}: { ssid: string; psk: string } = req.body;
 
         console.log(`connecting to ${ssid} with psk ${psk}`)
-        console.log(["nmcli", "connection", "add",
-            "type", "wifi",
-            "con-name", ssid,
-            "ssid", ssid,
-            "ifname", "wlan0",
-            "wifi-sec.key-mgmt", "wpa-psk",
-            "wifi-sec.psk", psk,
-            "connection.autoconnect", "yes",].join(" "))
         if (isRaspberryPi) {
 
             const existing = execSync("nmcli -t -f NAME,TYPE connection show")
@@ -29,25 +21,13 @@ export function wifiPostEndpoint() {
             }
 
             try {
-                const addResutls = execFileSync("nmcli", [
-                    "connection", "add",
-                    "type", "wifi",
-                    "con-name", ssid,
-                    "ssid", ssid,
-                    "ifname", "wlan0",
-                    "wifi-sec.key-mgmt", "wpa-psk",
-                    "wifi-sec.psk", psk,
-                    "connection.autoconnect", "yes",
-                ]).toString();
-
-                const upResults = execFileSync("nmcli", ["connection", "up", ssid, "--wait", "-1"]).toString();
-
-                res.json({
-                    addResutls,
-                    upResults
-                });
+                const output = execFileSync("nmcli", ["device", "wifi", "connect", ssid, "password", psk, "--rescan", "yes"]).toString();
+                const connected = output.includes("successfully activated");
+                res.json({connected});
             } catch (e) {
-                res.json({e});
+                const stderr = e instanceof Error && "stderr" in e && e.stderr instanceof Buffer ? e.stderr.toString() : String(e);
+                console.error("nmcli error:", stderr);
+                res.json({connected: false, error: stderr});
             }
         }
     };
