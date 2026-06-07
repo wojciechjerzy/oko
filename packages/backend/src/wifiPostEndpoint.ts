@@ -18,14 +18,14 @@ export function wifiPostEndpoint() {
                 .map(line => line.split(":")[0]);
 
             for (const name of existing) {
-                execSync(`nmcli connection delete "${name}"`);
+                execSync(`sudo nmcli connection delete "${name}"`);
             }
 
             try {
-                const output = execSync(`nmcli device wifi connect "${ssid}" password "${psk}" --wait -1`).toString();
+                const output = execSync(`sudo nmcli device wifi connect "${ssid}" password "${psk}" --wait -1`).toString();
                 const connected = output.includes("successfully activated");
                 if (connected) {
-                    execSync(`nmcli connection modify "${ssid}" connection.autoconnect yes`);
+                    execSync(`sudo nmcli connection modify "${ssid}" connection.autoconnect yes`);
                 }
                 res.json({connected});
             } catch {
