@@ -7,6 +7,14 @@ export function wifiPostEndpoint() {
         const {ssid, psk}: { ssid: string; psk: string } = req.body;
 
         console.log(`connecting to ${ssid} with psk ${psk}`)
+        console.log(["nmcli", "connection", "add",
+            "type", "wifi",
+            "con-name", ssid,
+            "ssid", ssid,
+            "ifname", "wlan0",
+            "wifi-sec.key-mgmt", "wpa-psk",
+            "wifi-sec.psk", psk,
+            "connection.autoconnect", "yes",].join(" "))
         if (isRaspberryPi) {
 
             const existing = execSync("nmcli -t -f NAME,TYPE connection show")
@@ -21,7 +29,7 @@ export function wifiPostEndpoint() {
             }
 
             try {
-                execFileSync("sudo", [
+                const addResutls = execFileSync("sudo", [
                     "nmcli", "connection", "add",
                     "type", "wifi",
                     "con-name", ssid,
@@ -30,10 +38,14 @@ export function wifiPostEndpoint() {
                     "wifi-sec.key-mgmt", "wpa-psk",
                     "wifi-sec.psk", psk,
                     "connection.autoconnect", "yes",
-                ]);
-                const output = execFileSync("sudo", ["nmcli", "connection", "up", ssid, "--wait", "-1"]).toString();
-                const connected = output.includes("successfully activated");
-                res.json({connected});
+                ]).toString();
+
+                const upResults = execFileSync("sudo", ["nmcli", "connection", "up", ssid, "--wait", "-1"]).toString();
+
+                res.json({
+                    addResutls,
+                    upResults
+                });
             } catch {
                 res.json({connected: false});
             }
