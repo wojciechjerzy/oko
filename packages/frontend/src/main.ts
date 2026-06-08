@@ -29,6 +29,7 @@ import {html} from "lit";
         page: new ObservableValue<Page>(data.page ?? "clock"),
         focusedElement: new ObservableValue<HTMLInputElement | undefined>(undefined),
         wifi: new ObservableValue<any>(undefined),
+        brightness: new ObservableValue<number>(data.brightness ?? 100)
     };
 
     state.page.addListener((value) => {
@@ -40,6 +41,12 @@ import {html} from "lit";
         data.photosUrl = value;
         localStorage.setItem("data", JSON.stringify(data));
     })
+
+    state.brightness.addListener(value => {
+        data.brightness = value;
+        localStorage.setItem("data", JSON.stringify(data));
+        communicationController.setBrightness(value);
+    });
 
     state.wifi.value = await communicationController.fetchInfo();
 
@@ -110,6 +117,14 @@ import {html} from "lit";
                             fetch("http://localhost:2137/upgrade")
                             menuController.removeMenu(menu)
                         }
+                    },
+                    {
+                        name: "+",
+                        onClick: (menu) => state.brightness.value = Math.min(100, state.brightness.value + 10)
+                    },
+                    {
+                        name: "-",
+                        onClick: (menu) => state.brightness.value = Math.max(0, state.brightness.value - 10)
                     },
                     {
                         name: "⏻",

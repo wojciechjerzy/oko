@@ -23,4 +23,8 @@ export class CommunicationController {
         });
         return await response.json();
     }
+
+    async setBrightness(number: number) {
+        return await (await fetch(rest + `light?value=${number}`)).json();
+    }
 }

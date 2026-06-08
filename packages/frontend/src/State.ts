@@ -10,4 +10,5 @@ export type State = {
     page: ObservableValue<Page>;
     focusedElement: ObservableValue<HTMLInputElement | undefined>;
     wifi: ObservableValue<Info>
+    brightness: ObservableValue<number>
 }
