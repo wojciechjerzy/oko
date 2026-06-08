@@ -60,8 +60,36 @@ export class SettingsPage extends LitElement {
             ssid: this.controllers.state.wifi.value.networks[0]?.ssid ?? "",
             psk: this.controllers.state.wifi.value.networks[0]?.psk ?? ""
         };
+        let photoUrl = this.controllers.state.photoUrl.value;
         return html`
             <div class="content">
+                <div>
+                    <table class="settings">
+                        <tbody>
+                        <tr>
+                            <td colspan="3">Album</td>
+                        </tr>
+                        <tr>
+                            <td>Nazwa:</td>
+                            <td>
+                                <input type="text"
+                                       .value=${this.controllers.state.photoUrl.value}
+                                       @focus=${(e: Event) => this.controllers.menuController.focus(e.target as HTMLInputElement)}
+                                       @input=${(e: InputEvent) => photoUrl = (e.target as HTMLInputElement).value}
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <button @click=${() => {
+                                    this.controllers.state.photoUrl.value = photoUrl;
+                                }}>Zapisz
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <div>
                     <table class="settings">
                         <tbody>

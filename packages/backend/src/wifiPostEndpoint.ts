@@ -16,14 +16,19 @@ export function wifiPostEndpoint() {
                 .filter(line => line.includes(":802-11-wireless"))
                 .map(line => line.split(":")[0]);
 
-            for (const name of existing) {
-                execFileSync("nmcli", ["connection", "delete", name]);
-            }
-
             try {
-                const output = execFileSync("nmcli", ["device", "wifi", "connect", ssid, "password", psk, "--rescan", "yes"]).toString();
-                const connected = output.includes("successfully activated");
-                res.json({connected});
+                const connectOutput = execFileSync("nmcli", ["device", "wifi", "connect", ssid, "password", psk]).toString();
+                const connected = connectOutput.includes("successfully activated");
+                if (connected) {
+                    for (const name of existing) {
+                        execFileSync("nmcli", ["connection", "delete", name]);
+                    }
+                }
+                res.json({
+                    output: connectOutput,
+                    connected
+                });
+
             } catch (e) {
                 const stderr = e instanceof Error && "stderr" in e && e.stderr instanceof Buffer ? e.stderr.toString() : String(e);
                 console.error("nmcli error:", stderr);
