@@ -1,9 +1,9 @@
-import {css, html, LitElement} from 'lit';
+import {css, html, LitElement, TemplateResult} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 
 export type Button =
     {
-        name: string
+        name: string | TemplateResult
         onClick: (menu: Button[]) => void
     }
 

@@ -12,6 +12,8 @@ import {
     SpotifyController,
     State
 } from "./index";
+import iconCat from './assets/icon_cat.png?url';
+import {html} from "lit";
 
 (async function () {
     document.body.style.margin = "0";
@@ -77,7 +79,7 @@ import {
                             menuController.removeMenu(menu)
                         }
                     }, {
-                        name: "CAT",
+                        name: html`<img src=${iconCat} width="80" height="80"/>`,
                         onClick: (menu) => {
                             state.page.value = "cat"
                             menuController.removeMenu(menu)

@@ -26,6 +26,7 @@ export class CatsPage extends LitElement {
     }
 
     async next() {
+        clearTimeout(this.timeout);
         const url = `https://api.thecatapi.com/v1/images/search?limit=1`;
         const response = await fetch(url);
         const json = await response.json();
@@ -51,6 +52,11 @@ export class CatsPage extends LitElement {
 
     render() {
         return html`
-            <div class="content" style="background-image: url('${this.url}')"></div>`;
+            <div
+                    class="content"
+                    style="background-image: url('${this.url}')"
+                    @click=${() => this.next()}
+            >
+            </div>`;
     }
 }
