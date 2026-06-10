@@ -86,22 +86,9 @@ import {html} from "lit";
                             menuController.removeMenu(menu)
                         }
                     }, {
-                        name: "F",
-                        onClick: (menu) => {
-                            document.body.requestFullscreen();
-                            menuController.removeMenu(menu)
-                        }
-                    }, {
                         name: "⚙️",
                         onClick: (menu) => {
                             state.page.value = "settings"
-                            menuController.removeMenu(menu)
-                        }
-                    },
-                    {
-                        name: "↻",
-                        onClick: (menu) => {
-                            location.reload()
                             menuController.removeMenu(menu)
                         }
                     },
@@ -118,14 +105,6 @@ import {html} from "lit";
                             state.page.value = "brightness"
                             menuController.removeMenu(menu)
                         }
-                    },
-                    {
-                        name: "+",
-                        onClick: (menu) => state.brightness.value = Math.min(100, state.brightness.value + 10)
-                    },
-                    {
-                        name: "-",
-                        onClick: (menu) => state.brightness.value = Math.max(0, state.brightness.value - 10)
                     },
                     {
                         name: "⏻",

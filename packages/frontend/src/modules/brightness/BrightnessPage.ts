@@ -35,6 +35,15 @@ export class BrightnessPage extends LitElement {
             justify-content: center;
             align-items: center;
         }
+
+        .value {
+            font-size: 100px;
+        }
+
+        input {
+            width: 400px;
+            height: 100px;
+        }
     `;
 
     @consume({context: applicationContext, subscribe: true})
@@ -43,28 +52,30 @@ export class BrightnessPage extends LitElement {
 
     connectedCallback() {
         super.connectedCallback();
+        this.controllers.state.brightness.addListener(this.onBrightness, this);
     }
 
     disconnectedCallback() {
+        this.controllers.state.brightness.removeListener(this.onBrightness, this);
         super.disconnectedCallback();
+    }
+
+    private onBrightness() {
+        this.requestUpdate();
     }
 
     render() {
         return html`
             <div class="content">
-                <table>
-                    <tbody>
-                    ${
-                            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23].map(hour => {
-                                return html`
-                                    <tr>
-                                        <td>${hour}</td>
-                                        <td><input type="range" min="0" max="100"/></td>
-                                    </tr>`
-                            })
-                    }
-                    </tbody>
-                </table>
+                <div class="value">
+                    ${this.controllers.state.brightness.value}%
+                </div>
+                <div class="value">
+                    <input type="range" min="0" max="100" value="${this.controllers.state.brightness.value}"
+                           @change=${(e: Event) => this.controllers.state.brightness.value = parseInt((e.target as HTMLInputElement).value)}
+                    />
+                </div>
+
             </div>`;
     }
 }
