@@ -1,0 +1,70 @@
+import {css, html, LitElement} from 'lit';
+import {customElement} from 'lit/decorators.js';
+import {consume} from "@lit-labs/context";
+import {type ApplicationContext, applicationContext} from "../../ApplicationContext";
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "brightness-page": BrightnessPage;
+    }
+}
+
+@customElement("brightness-page")
+export class BrightnessPage extends LitElement {
+
+    static template({clazz}: { clazz: string }) {
+        return html`
+            <brightness-page class=${clazz}>
+
+            </brightness-page>
+        `;
+    }
+
+    static styles = css`
+        .content {
+            width: 100%;
+            height: 100%;
+            left: 0px;
+            top: 0px;
+            position: absolute;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+    `;
+
+    @consume({context: applicationContext, subscribe: true})
+    accessor controllers!: ApplicationContext;
+
+
+    connectedCallback() {
+        super.connectedCallback();
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback();
+    }
+
+    render() {
+        return html`
+            <div class="content">
+                <table>
+                    <tbody>
+                    ${
+                            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23].map(hour => {
+                                return html`
+                                    <tr>
+                                        <td>${hour}</td>
+                                        <td><input type="range" min="0" max="100"/></td>
+                                    </tr>`
+                            })
+                    }
+                    </tbody>
+                </table>
+            </div>`;
+    }
+}

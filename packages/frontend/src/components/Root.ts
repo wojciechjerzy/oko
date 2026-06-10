@@ -9,6 +9,7 @@ import {SettingsPage} from "../modules/settings/SettingsPage";
 import {SpotifyPage} from "../modules/spotify/SpotifyPage";
 import {CatsPage} from "../modules/moon/CatsPage";
 import {Page} from "../Page";
+import {BrightnessPage} from "../modules/brightness/BrightnessPage";
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -90,6 +91,7 @@ export class Root extends LitElement {
                         moon: () => MoonPage.template({clazz: "page"}),
                         cat: () => CatsPage.template({clazz: "page"}),
                         settings: () => SettingsPage.template({clazz: "page"}),
+                        brightness: () => BrightnessPage.template({clazz: "page"}),
                     }, this.controllers.state.page.value)
             }
             ${this.controllers.menuController.render()}

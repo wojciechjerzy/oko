@@ -10,6 +10,7 @@ export * from './utils/generateRandomString';
 export * from './utils/ifDefined';
 export * from './utils/MyEvent';
 export * from './modules/brightness/BrightnessController';
+export * from './modules/brightness/BrightnessPage';
 export * from './modules/clock/ClockController';
 export * from './modules/clock/ClockNumber';
 export * from './modules/clock/ClockPage';

@@ -1,1 +1,1 @@
-export type Page = "settings" | "moon" | "photos" | "spotify" | "clock" | "cat";
+export type Page = "settings" | "moon" | "photos" | "spotify" | "clock" | "cat" | "brightness";

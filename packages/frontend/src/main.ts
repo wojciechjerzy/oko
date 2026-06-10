@@ -119,6 +119,13 @@ import {html} from "lit";
                         }
                     },
                     {
+                        name: "🔆️",
+                        onClick: (menu) => {
+                            state.page.value = "brightness"
+                            menuController.removeMenu(menu)
+                        }
+                    },
+                    {
                         name: "+",
                         onClick: (menu) => state.brightness.value = Math.min(100, state.brightness.value + 10)
                     },
@@ -145,7 +152,7 @@ import {html} from "lit";
         menuController,
         spotifyController: new SpotifyController(),
         clockController: new ClockController(),
-        brightnessController: new BrightnessController(),
+        brightnessController: new BrightnessController({communicationController}),
         communicationController,
         photoController: new PhotoController({communicationController, state})
     };
