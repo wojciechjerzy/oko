@@ -1,4 +1,6 @@
 import {CommunicationController} from "../../CommunicationController";
+import {State} from "../../State";
+import {Data} from "../../Data";
 
 interface SunData {
     sunriseMinutes: number; // minutes since midnight
@@ -8,15 +10,26 @@ interface SunData {
 export class BrightnessController {
     private sunData: SunData | null = null;
     private lastFetchDate: string | null = null;
-    private communicationController: CommunicationController;
+    private state: State;
 
-    constructor({communicationController}: { communicationController: CommunicationController }) {
-        this.communicationController = communicationController;
+    constructor({communicationController, state, data}: {
+        communicationController: CommunicationController,
+        state: State,
+        data: Data
+    }) {
+        this.state = state;
+
+        this.state.brightness.addListener(value => {
+            data.brightness = value;
+            localStorage.setItem("data", JSON.stringify(data));
+            communicationController.setBrightness(value);
+        });
+
         this.next();
     }
 
     async next() {
-        this.communicationController.setBrightness(await this.getBrightness(Date.now()))
+        this.state.brightness.value = await this.getBrightness(Date.now());
         setTimeout(() => this.next(), 60 * 60 * 1000)
     }
 

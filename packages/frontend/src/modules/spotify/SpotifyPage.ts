@@ -259,22 +259,7 @@ export class SpotifyPage extends LitElement {
             </div>
             ${this.renderSelect()}
             ${this.renderVolume()}
-            ${this.renderLight()}
         `
-    }
-
-    private renderLight() {
-        return html` <input class="light"
-                            type="range"
-                            min="0"
-                            max="100"
-                            @change=${(e: InputEvent) => {
-                                const target = e.target as HTMLInputElement;
-                                this.light = target.valueAsNumber;
-                                fetch(`http://localhost:2137/light?value=${this.light}`);
-                            }}
-                            .value=${this.light}/>`;
-
     }
 
     private renderVolume() {

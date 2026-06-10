@@ -42,12 +42,6 @@ import {html} from "lit";
         localStorage.setItem("data", JSON.stringify(data));
     })
 
-    state.brightness.addListener(value => {
-        data.brightness = value;
-        localStorage.setItem("data", JSON.stringify(data));
-        communicationController.setBrightness(value);
-    });
-
     state.wifi.value = await communicationController.fetchInfo();
 
     const menuController = new MenuController({state});
@@ -152,7 +146,7 @@ import {html} from "lit";
         menuController,
         spotifyController: new SpotifyController(),
         clockController: new ClockController(),
-        brightnessController: new BrightnessController({communicationController}),
+        brightnessController: new BrightnessController({communicationController, state, data}),
         communicationController,
         photoController: new PhotoController({communicationController, state})
     };
